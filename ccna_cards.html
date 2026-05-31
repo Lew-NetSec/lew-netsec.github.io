@@ -440,6 +440,27 @@
 
 
 
+  /* ── CARD NAV ARROWS ──────────────────────────── */
+  .card-nav {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .card-nav-btn {
+    background: #F0F3F7; border: 1.5px solid rgba(0,0,0,0.11);
+    border-radius: 7px; padding: 6px 14px;
+    font-size: 12px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    color: var(--muted); cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .card-nav-btn:hover { background: var(--blue-bg); color: var(--blue); border-color: rgba(10,116,212,0.3); }
+  .card-nav-btn:disabled { opacity: 0.3; cursor: default; pointer-events: none; }
+  .card-nav-progress {
+    flex: 1; text-align: center;
+    font-size: 11px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
   svg text { font-family: 'DM Sans', sans-serif; }
   svg text.mono { font-family: 'DM Mono', monospace; }
 
@@ -590,6 +611,10 @@
       <button class="nav-btn" onclick="showCard('ports')" data-id="ports">
         <span class="nav-icon" style="background:#EEEAFF;color:#5B36C4">PT</span>
         Well-Known Ports
+      </button>
+      <button class="nav-btn" onclick="showCard('subnet')" data-id="subnet">
+        <span class="nav-icon" style="background:#FFF6DC;color:#B87000">SN</span>
+        Subnetting
       </button>
     </div>
   </nav>
@@ -1546,6 +1571,277 @@ ${[['49','TCP','TACACS+','Cisco AAA — encrypts entire payload · separates aut
       { id: 'w1l6', icon: 'L5', iconBg: '#EEEAFF', iconColor: '#5B36C4', name: 'Lesson 5', desc: 'TCP vs UDP in depth' },
     ]
   },
+
+  subnet: {
+    icon: 'SN', iconBg: '#FFF6DC', iconColor: '#B87000',
+    name: 'Subnetting',
+    layerLabel: 'Layer 3 · Network', layerBg: '#FFF6DC', layerColor: '#B87000', layerTarget: 'osi',
+    objLabel: 'Obj 1.6', objBg: '#D8F5EC', objColor: '#0A5C47',
+    oneliner: 'A subnet mask splits an IP address into network portion and host portion — telling devices which IPs are local and how many hosts fit in the network.',
+    hook: 'The subnet mask is the fence. Everything on your side is local. Everything over the fence needs the router.',
+    visual: `<style>
+@keyframes sn-slide{0%,100%{opacity:0;transform:translateX(-6px)}15%{opacity:1;transform:translateX(0)}80%{opacity:1}92%{opacity:0}}
+@keyframes sn-fade{0%,100%{opacity:0.4}50%{opacity:1}}
+</style>
+<svg viewBox="0 0 680 330" style="width:100%;display:block;background:#F5F4F0">
+
+  <!-- Title -->
+  <text x="340" y="20" text-anchor="middle" font-size="11" fill="#B87000" font-weight="600" font-family="DM Sans,sans-serif">How a subnet mask splits an IP address</text>
+
+  <!-- IP Address display -->
+  <rect x="40" y="30" width="600" height="44" rx="8" fill="#fff" stroke="rgba(0,0,0,0.10)" stroke-width="1.5"/>
+  <text x="340" y="48" text-anchor="middle" font-size="11" fill="#4A4A46" font-family="DM Mono,monospace">IP Address</text>
+  <text x="340" y="66" text-anchor="middle" font-size="20" fill="#0F0F0D" font-weight="600" font-family="DM Mono,monospace">192  .  168  .  1  .  42</text>
+
+  <!-- Subnet mask -->
+  <rect x="40" y="84" width="600" height="44" rx="8" fill="#FFF6DC" stroke="#F0A030" stroke-width="1.5"/>
+  <text x="340" y="102" text-anchor="middle" font-size="11" fill="#B87000" font-family="DM Mono,monospace">Subnet Mask  /26</text>
+  <text x="340" y="120" text-anchor="middle" font-size="16" fill="#B87000" font-weight="600" font-family="DM Mono,monospace">255  .  255  .  255  .  192</text>
+
+  <!-- Split line -->
+  <line x1="480" y1="138" x2="480" y2="216" stroke="#B87000" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="480" y="234" text-anchor="middle" font-size="9" fill="#B87000" font-family="DM Sans,sans-serif">the fence</text>
+
+  <!-- Network portion -->
+  <rect x="40" y="144" width="426" height="60" rx="8" fill="#E0EFFF" stroke="#7BB8EE" stroke-width="1.5"/>
+  <text x="253" y="166" text-anchor="middle" font-size="11" fill="#0A74D4" font-weight="600" font-family="DM Sans,sans-serif">NETWORK portion</text>
+  <text x="253" y="184" text-anchor="middle" font-size="16" fill="#0A74D4" font-weight="700" font-family="DM Mono,monospace">192.168.1</text>
+  <text x="253" y="199" text-anchor="middle" font-size="9" fill="#0A74D4" font-family="DM Sans,sans-serif">same for every device on this subnet</text>
+
+  <!-- Host portion -->
+  <rect x="480" y="144" width="160" height="60" rx="8" fill="#D8F5EC" stroke="#5ECFAB" stroke-width="1.5"/>
+  <text x="560" y="166" text-anchor="middle" font-size="11" fill="#0A5C47" font-weight="600" font-family="DM Sans,sans-serif">HOST portion</text>
+  <text x="560" y="184" text-anchor="middle" font-size="20" fill="#0A5C47" font-weight="700" font-family="DM Mono,monospace">.42</text>
+  <text x="560" y="199" text-anchor="middle" font-size="9" fill="#0A5C47" font-family="DM Sans,sans-serif">this specific device</text>
+
+  <!-- Magic number row label -->
+  <text x="40" y="248" font-size="10" fill="#5B36C4" font-weight="600" font-family="DM Sans,sans-serif">The magic number row — memorise these 8 numbers once:</text>
+
+  <!-- Magic number boxes -->
+  ${[
+    ['128','/25'],['64','/26'],['32','/27'],['16','/28'],
+    ['8','/29'],['4','/30'],['2','/31'],['1','/32']
+  ].map(([n,cidr],i) => {
+    const x = 40 + i*77;
+    const highlight = cidr === '/26';
+    return `
+    <rect x="${x}" y="256" width="68" height="44" rx="6" fill="${highlight?'#EEEAFF':'#fff'}" stroke="${highlight?'#9B86E0':'rgba(0,0,0,0.10)'}" stroke-width="${highlight?2:1.5}"/>
+    <text x="${x+34}" y="274" text-anchor="middle" font-size="16" fill="${highlight?'#5B36C4':'#0F0F0D'}" font-weight="700" font-family="DM Mono,monospace">${n}</text>
+    <text x="${x+34}" y="291" text-anchor="middle" font-size="9" fill="${highlight?'#5B36C4':'#888780'}" font-family="DM Mono,monospace">${cidr}</text>`;
+  }).join('')}
+
+  <!-- Arrow pointing to /26 -->
+  <text x="158" y="316" text-anchor="middle" font-size="9" fill="#5B36C4" font-family="DM Sans,sans-serif">↑ /26 = block size 64 → 62 usable hosts</text>
+
+</svg>`,
+    extraSections: [
+      {
+        label: 'The pattern — how to read any CIDR prefix instantly',
+        content: `<div style="overflow-x:auto"><table style="width:100%;min-width:520px;border-collapse:collapse;font-size:13px">
+<thead><tr style="background:#F0F3F7">
+  <th style="padding:10px 14px;text-align:left;border-bottom:1.5px solid rgba(0,0,0,0.10);color:#4A4A46">CIDR</th>
+  <th style="padding:10px 14px;text-align:left;border-bottom:1.5px solid rgba(0,0,0,0.10);color:#4A4A46">Subnet Mask</th>
+  <th style="padding:10px 14px;text-align:left;border-bottom:1.5px solid rgba(0,0,0,0.10);color:#4A4A46">Usable Hosts</th>
+  <th style="padding:10px 14px;text-align:left;border-bottom:1.5px solid rgba(0,0,0,0.10);color:#4A4A46">Block Size</th>
+  <th style="padding:10px 14px;text-align:left;border-bottom:1.5px solid rgba(0,0,0,0.10);color:#4A4A46">Use case</th>
+</tr></thead>
+<tbody>
+${[
+  ['/24','255.255.255.0','254','256','Standard small office LAN'],
+  ['/25','255.255.255.128','126','128','Split a /24 in half'],
+  ['/26','255.255.255.192','62','64','Split a /24 into quarters'],
+  ['/27','255.255.255.224','30','32','Small team / VLAN'],
+  ['/28','255.255.255.240','14','16','Point-to-point or tiny group'],
+  ['/30','255.255.255.252','2','4','WAN link between two routers'],
+  ['/32','255.255.255.255','1','1','Host route — single device'],
+].map((r,i) => `<tr style="${i%2?'background:#F8F8F6;':''}border-bottom:1px solid rgba(0,0,0,0.06)">
+  <td style="padding:10px 14px;font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:#B87000">${r[0]}</td>
+  <td style="padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#4A4A46">${r[1]}</td>
+  <td style="padding:10px 14px;font-weight:700;color:#0A5C47;font-size:14px">${r[2]}</td>
+  <td style="padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px;color:#4A4A46">${r[3]}</td>
+  <td style="padding:10px 14px;font-size:12px;color:#4A4A46">${r[4]}</td>
+</tr>`).join('')}
+</tbody></table></div>
+<div style="margin-top:10px;padding:10px 14px;background:#FFF6DC;border-radius:8px;border:1.5px solid rgba(184,112,0,0.25);font-size:12px;color:#B87000;line-height:1.7">
+  <strong>The pattern:</strong> each step right in the magic number row halves the block size and halves the hosts. /25 = 128, /26 = 64, /27 = 32, /28 = 16, /29 = 8, /30 = 4. Usable hosts = block size − 2 (the only calculation you ever need).
+</div>`
+      },
+      {
+        label: 'The three special addresses in every subnet',
+        content: `<svg viewBox="0 0 600 160" style="width:100%;display:block;background:#F5F4F0;border-radius:8px">
+  <text x="300" y="22" text-anchor="middle" font-size="11" fill="#4A4A46" font-weight="600" font-family="DM Sans,sans-serif">Example: 192.168.1.0 /24</text>
+
+  <!-- Network address -->
+  <rect x="20" y="32" width="170" height="54" rx="7" fill="#E0EFFF" stroke="#7BB8EE" stroke-width="1.5"/>
+  <text x="105" y="52" text-anchor="middle" font-size="10" fill="#0A74D4" font-weight="700" font-family="DM Sans,sans-serif">Network Address</text>
+  <text x="105" y="68" text-anchor="middle" font-size="14" fill="#0A74D4" font-weight="700" font-family="DM Mono,monospace">192.168.1.0</text>
+  <text x="105" y="82" text-anchor="middle" font-size="9" fill="#0A74D4" font-family="DM Sans,sans-serif">Not assignable · identifies subnet</text>
+
+  <!-- Usable range -->
+  <rect x="210" y="32" width="180" height="54" rx="7" fill="#D8F5EC" stroke="#5ECFAB" stroke-width="1.5"/>
+  <text x="300" y="52" text-anchor="middle" font-size="10" fill="#0A5C47" font-weight="700" font-family="DM Sans,sans-serif">Usable Host Range</text>
+  <text x="300" y="68" text-anchor="middle" font-size="13" fill="#0A5C47" font-weight="700" font-family="DM Mono,monospace">.1 → .254</text>
+  <text x="300" y="82" text-anchor="middle" font-size="9" fill="#0A5C47" font-family="DM Sans,sans-serif">254 devices can use these</text>
+
+  <!-- Broadcast -->
+  <rect x="410" y="32" width="170" height="54" rx="7" fill="#FFE0E0" stroke="#EE9090" stroke-width="1.5"/>
+  <text x="495" y="52" text-anchor="middle" font-size="10" fill="#9B1C1C" font-weight="700" font-family="DM Sans,sans-serif">Broadcast Address</text>
+  <text x="495" y="68" text-anchor="middle" font-size="14" fill="#9B1C1C" font-weight="700" font-family="DM Mono,monospace">192.168.1.255</text>
+  <text x="495" y="82" text-anchor="middle" font-size="9" fill="#9B1C1C" font-family="DM Sans,sans-serif">Not assignable · sends to all hosts</text>
+
+  <!-- Rule -->
+  <rect x="20" y="100" width="560" height="48" rx="7" fill="#fff" stroke="rgba(0,0,0,0.10)" stroke-width="1.5"/>
+  <text x="300" y="118" text-anchor="middle" font-size="10" fill="#4A4A46" font-weight="600" font-family="DM Sans,sans-serif">Every subnet loses 2 addresses — always subtract 2 from the block size to get usable hosts</text>
+  <text x="300" y="136" text-anchor="middle" font-size="10" fill="#B87000" font-family="DM Mono,monospace">/24 block = 256  →  256 − 2 = 254 usable hosts</text>
+</svg>`
+      },
+      {
+        label: 'How to answer any subnet question — the magic number method',
+        content: `<div style="margin-bottom:14px;padding:12px 14px;background:#EEEAFF;border-radius:8px;border:1.5px solid rgba(91,54,196,0.25)">
+  <div style="font-size:11px;font-weight:700;color:#5B36C4;letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase">Step 1 — memorise this row once</div>
+  <div style="display:flex;gap:6px;flex-wrap:nowrap">
+    ${[['128','/25'],['64','/26'],['32','/27'],['16','/28'],['8','/29'],['4','/30'],['2','/31'],['1','/32']].map(([n,c])=>`<div style="flex:1;text-align:center;background:#fff;border-radius:6px;padding:8px 4px;border:1.5px solid rgba(91,54,196,0.2)"><div style="font-size:16px;font-weight:700;color:#5B36C4;font-family:'DM Mono',monospace">${n}</div><div style="font-size:9px;color:#5B36C4;font-family:'DM Mono',monospace;margin-top:2px">${c}</div></div>`).join('')}
+  </div>
+  <div style="font-size:11px;color:#5B36C4;margin-top:8px">Each number is the <strong>block size</strong> for that prefix. That's all you need.</div>
+</div>
+
+<div style="font-size:12px;font-weight:700;color:#0F0F0D;margin-bottom:8px">Step 2 — worked example: 192.168.1.42 /26</div>
+<ol style="padding-left:18px;margin:0 0 14px;line-height:2.2">
+  <li style="font-size:13px;color:#0F0F0D"><strong>Look up the block size.</strong> /26 → <span style="background:#EEEAFF;color:#5B36C4;padding:1px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-weight:700">64</span></li>
+  <li style="font-size:13px;color:#0F0F0D"><strong>Count up from 0 in steps of 64.</strong> 0 → 64 → 128 → 192. Find where .42 sits → between <span style="font-family:'DM Mono',monospace;font-weight:700">0</span> and <span style="font-family:'DM Mono',monospace;font-weight:700">64</span></li>
+  <li style="font-size:13px;color:#0F0F0D"><strong>Network address</strong> = 192.168.1.<span style="background:#E0EFFF;color:#0A74D4;padding:1px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-weight:700">0</span></li>
+  <li style="font-size:13px;color:#0F0F0D"><strong>Broadcast address</strong> = next step − 1 = 192.168.1.<span style="background:#FFE0E0;color:#9B1C1C;padding:1px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-weight:700">63</span></li>
+  <li style="font-size:13px;color:#0F0F0D"><strong>Usable hosts</strong> = block size − 2 = 64 − 2 = <span style="background:#D8F5EC;color:#0A5C47;padding:1px 7px;border-radius:4px;font-family:'DM Mono',monospace;font-weight:700">62</span></li>
+  <li style="font-size:13px;color:#0F0F0D"><strong>Usable range</strong> = 192.168.1.<span style="font-family:'DM Mono',monospace;font-weight:700">1</span> → 192.168.1.<span style="font-family:'DM Mono',monospace;font-weight:700">62</span></li>
+</ol>
+<div style="padding:10px 14px;background:#FFF6DC;border-radius:8px;border:1.5px solid rgba(184,112,0,0.25);font-size:12px;color:#B87000;line-height:1.7">
+  <strong>The only math involved:</strong> counting up in one number (64, 64, 64...) and subtracting 2 at the end. No binary, no long division, no conversion.
+</div>`
+      },
+      {
+        label: '👁 Visual ruler — see the blocks',
+        content: '<div id="sn-ruler-wrap">'
+          + '<style>'
+          + '#sn-ruler-wrap{font-family:\'DM Sans\',sans-serif}'
+          + '.snr-pfx-btn{padding:5px 13px;font-size:13px;font-family:\'DM Mono\',monospace;border-radius:6px;border:1.5px solid rgba(0,0,0,0.12);cursor:pointer;background:#fff;color:#0F0F0D;transition:all .15s}'
+          + '.snr-pfx-btn.active{background:#0A74D4;color:#fff;border-color:#0A74D4}'
+          + '.snr-ruler{position:relative;height:54px;border-radius:8px;overflow:hidden;cursor:crosshair;border:1.5px solid rgba(0,0,0,0.12)}'
+          + '.snr-labels{position:relative;height:18px;margin-top:3px}'
+          + '.snr-hover{font-size:12px;color:#4A4A46;min-height:18px;margin:6px 0;font-family:\'DM Mono\',monospace}'
+          + '.snr-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}'
+          + '.snr-card{border-radius:8px;padding:10px 12px}'
+          + '.snr-card .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}'
+          + '.snr-card .val{font-size:13px;font-weight:500;font-family:\'DM Mono\',monospace}'
+          + '.snr-hint{font-size:11px;color:#888780;margin-top:10px}'
+          + '</style>'
+          + '<div style="font-size:11px;font-weight:700;color:#4A4A46;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Choose a prefix — then click anywhere on the ruler</div>'
+          + '<div id="snr-btns" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>'
+          + '<div class="snr-ruler" id="snr-ruler"></div>'
+          + '<div class="snr-labels" id="snr-labels"></div>'
+          + '<div class="snr-hover" id="snr-hover"></div>'
+          + '<div class="snr-cards" id="snr-cards"></div>'
+          + '<div class="snr-hint" id="snr-hint">Hover to explore · click to pin an address</div>'
+          + '</div>',
+      },
+      {
+        label: '⚡ Practice — subnet drill',
+        content: '<div id="sn-drill">'
+          + '<style>'
+          + '#sn-drill{font-family:\'DM Sans\',sans-serif}'
+          + '.sn-magic{display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap}'
+          + '.sn-magic-box{flex:1;min-width:48px;text-align:center;background:#fff;border:1.5px solid rgba(91,54,196,0.2);border-radius:6px;padding:7px 4px}'
+          + '.sn-magic-box .n{font-size:16px;font-weight:700;color:#5B36C4;font-family:\'DM Mono\',monospace}'
+          + '.sn-magic-box .c{font-size:9px;color:#5B36C4;font-family:\'DM Mono\',monospace;margin-top:2px}'
+          + '.sn-question{background:#F0F3F7;border-radius:8px;padding:16px;margin-bottom:14px;text-align:center}'
+          + '.sn-ip{font-size:22px;font-weight:700;color:#0F0F0D;font-family:\'DM Mono\',monospace}'
+          + '.sn-prefix{font-size:22px;font-weight:700;color:#B87000;font-family:\'DM Mono\',monospace}'
+          + '.sn-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}'
+          + '.sn-field label{display:block;font-size:11px;font-weight:700;color:#4A4A46;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}'
+          + '.sn-field input{width:100%;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:7px;font-size:14px;font-family:\'DM Mono\',monospace;background:#fff;color:#0F0F0D;outline:none}'
+          + '.sn-field input:focus{border-color:#5B36C4}'
+          + '.sn-field input.correct{border-color:#1A8A40;background:#D8F5EC}'
+          + '.sn-field input.wrong{border-color:#9B1C1C;background:#FFE0E0}'
+          + '.sn-hint{font-size:11px;margin-top:4px;font-family:\'DM Mono\',monospace;min-height:16px}'
+          + '.sn-hint.correct{color:#1A8A40}'
+          + '.sn-hint.wrong{color:#9B1C1C}'
+          + '.sn-btns{display:flex;gap:8px;margin-bottom:10px}'
+          + '.sn-btn{flex:1;padding:11px;border-radius:8px;font-size:13px;font-weight:700;font-family:\'DM Sans\',sans-serif;cursor:pointer;border:1.5px solid}'
+          + '.sn-btn-check{background:#EEEAFF;color:#5B36C4;border-color:rgba(91,54,196,0.3)}'
+          + '.sn-btn-new{background:#D8F5EC;color:#0A5C47;border-color:rgba(26,138,64,0.3)}'
+          + '.sn-result{display:none;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:13px;font-weight:600;text-align:center}'
+          + '.sn-result.pass{background:#D8F5EC;color:#0A5C47;border:1.5px solid rgba(26,138,64,0.3)}'
+          + '.sn-result.fail{background:#FFF6DC;color:#B87000;border:1.5px solid rgba(184,112,0,0.3)}'
+          + '.sn-ref{font-size:11px;color:#888780;text-align:center;margin-top:8px;font-family:\'DM Mono\',monospace}'
+          + '</style>'
+          + '<div style="font-size:11px;font-weight:700;color:#5B36C4;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase">Magic number row — use as reference:</div>'
+          + '<div class="sn-magic">'
+          + '<div class="sn-magic-box"><div class="n">128</div><div class="c">/25</div></div>'
+          + '<div class="sn-magic-box"><div class="n">64</div><div class="c">/26</div></div>'
+          + '<div class="sn-magic-box"><div class="n">32</div><div class="c">/27</div></div>'
+          + '<div class="sn-magic-box"><div class="n">16</div><div class="c">/28</div></div>'
+          + '<div class="sn-magic-box"><div class="n">8</div><div class="c">/29</div></div>'
+          + '<div class="sn-magic-box"><div class="n">4</div><div class="c">/30</div></div>'
+          + '<div class="sn-magic-box"><div class="n">2</div><div class="c">/31</div></div>'
+          + '<div class="sn-magic-box"><div class="n">1</div><div class="c">/32</div></div>'
+          + '</div>'
+          + '<div class="sn-question"><div style="font-size:11px;color:#888780;margin-bottom:6px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">Given this IP and prefix — fill in the answers:</div>'
+          + '<div><span class="sn-ip" id="sn-ip">Loading...</span><span class="sn-prefix" id="sn-prefix"></span></div></div>'
+          + '<div class="sn-fields">'
+          + '<div class="sn-field"><label>Network Address</label><input type="text" id="sn-net" placeholder="e.g. 192.168.1.0" autocomplete="off" spellcheck="false"/><div class="sn-hint" id="sn-net-hint"></div></div>'
+          + '<div class="sn-field"><label>Broadcast Address</label><input type="text" id="sn-bcast" placeholder="e.g. 192.168.1.63" autocomplete="off" spellcheck="false"/><div class="sn-hint" id="sn-bcast-hint"></div></div>'
+          + '<div class="sn-field"><label>First Usable Host</label><input type="text" id="sn-first" placeholder="e.g. 192.168.1.1" autocomplete="off" spellcheck="false"/><div class="sn-hint" id="sn-first-hint"></div></div>'
+          + '<div class="sn-field"><label>Usable Hosts</label><input type="text" id="sn-hosts" placeholder="e.g. 62" autocomplete="off" spellcheck="false"/><div class="sn-hint" id="sn-hosts-hint"></div></div>'
+          + '</div>'
+          + '<div class="sn-result" id="sn-result"></div>'
+          + '<div class="sn-btns">'
+          + '<button class="sn-btn sn-btn-check" onclick="snCheck()">Check answers</button>'
+          + '<button class="sn-btn sn-btn-new" onclick="snNew()">New question →</button>'
+          + '</div>'
+          + '<div class="sn-ref" id="sn-ref"></div>'
+          + '</div>',
+      },
+      {
+        label: 'Private IP ranges — what cannot route on the internet',
+        content: `<div style="overflow-x:auto"><table style="width:100%;min-width:480px;border-collapse:collapse;font-size:13px">
+<thead><tr style="background:#F0F3F7">
+  <th style="padding:10px 14px;text-align:left;border-bottom:1.5px solid rgba(0,0,0,0.10)">Range</th>
+  <th style="padding:10px 14px;text-align:left;border-bottom:1.5px solid rgba(0,0,0,0.10)">CIDR</th>
+  <th style="padding:10px 14px;text-align:left;border-bottom:1.5px solid rgba(0,0,0,0.10)">Common use</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid rgba(0,0,0,0.06)"><td style="padding:10px 14px;font-family:'DM Mono',monospace;font-weight:700;color:#0A74D4">10.0.0.0</td><td style="padding:10px 14px;font-family:'DM Mono',monospace;color:#4A4A46">/8</td><td style="padding:10px 14px;color:#4A4A46">Large enterprise networks</td></tr>
+<tr style="background:#F8F8F6;border-bottom:1px solid rgba(0,0,0,0.06)"><td style="padding:10px 14px;font-family:'DM Mono',monospace;font-weight:700;color:#0A74D4">172.16.0.0–172.31.255.255</td><td style="padding:10px 14px;font-family:'DM Mono',monospace;color:#4A4A46">/12</td><td style="padding:10px 14px;color:#4A4A46">Medium networks</td></tr>
+<tr style="border-bottom:1px solid rgba(0,0,0,0.06)"><td style="padding:10px 14px;font-family:'DM Mono',monospace;font-weight:700;color:#0A74D4">192.168.0.0</td><td style="padding:10px 14px;font-family:'DM Mono',monospace;color:#4A4A46">/16</td><td style="padding:10px 14px;color:#4A4A46">Home and small office</td></tr>
+</tbody></table></div>
+<div style="margin-top:10px;padding:10px 14px;background:#FFE0E0;border-radius:8px;border:1.5px solid rgba(155,28,28,0.20);font-size:12px;color:#9B1C1C;line-height:1.7">
+  Private IPs cannot reach the internet without NAT. If you see 10.x, 172.16-31.x or 192.168.x in an exam question — it's a private address. Routers on the internet will drop these packets.
+</div>`
+      },
+      {
+        label: 'Why this matters — exam context',
+        content: `<p style="font-size:13px;color:#0F0F0D;line-height:1.7;margin-bottom:8px">Subnetting is the most heavily tested topic on the CCNA exam and the one most likely to cost marks under time pressure. Unlike other topics where you need to understand a concept, subnetting requires you to perform calculations quickly and accurately — closer to a skill than knowledge.</p>
+<p style="font-size:13px;color:#0F0F0D;line-height:1.7;margin-bottom:8px">The exam will give you an IP address and mask and ask you to find the network address, broadcast address, usable range, or number of hosts. These questions look different every time but always follow the same block-size pattern described in the method above.</p>
+<p style="font-size:13px;color:#0F0F0D;line-height:1.7">The goal is to reach the point where /24 through /30 are instant — no calculation needed. Build to that by running through 5-10 examples every day until it becomes automatic.</p>`
+      }
+    ],
+    terms: [
+      { label: 'subnet mask', bg: '#FFF6DC', color: '#B87000' },
+      { label: 'CIDR /24', bg: '#FFF6DC', color: '#B87000' },
+      { label: 'network address', bg: '#E0EFFF', color: '#0A74D4' },
+      { label: 'broadcast address', bg: '#FFE0E0', color: '#9B1C1C' },
+      { label: 'usable hosts', bg: '#D8F5EC', color: '#0A5C47' },
+      { label: 'block size', bg: '#FFF6DC', color: '#B87000' },
+      { label: 'private IP', bg: '#E0EFFF', color: '#0A74D4' },
+      { label: 'NAT', bg: '#ECEAE0', color: '#3D3C38' },
+    ],
+    trap: 'Always subtract 2 from the block size for usable hosts — network address and broadcast address are never assignable. /30 gives only 2 usable hosts — used for point-to-point WAN links.',
+    related: [
+      { id: 'ip', icon: 'IP', iconBg: '#E0EFFF', iconColor: '#0A74D4', name: 'IP Addressing', desc: 'Layer 3 · logical addresses' },
+      { id: 'router', icon: 'RT', iconBg: '#FFF6DC', iconColor: '#B87000', name: 'Router', desc: 'routes between subnets' },
+      { id: 'w1l3', icon: 'L2', iconBg: '#FFF6DC', iconColor: '#B87000', name: 'Lesson 2', desc: 'routing between networks' },
+    ]
+  },
+
   w1l3: {
     icon: 'L2', iconBg: '#FFF6DC', iconColor: '#B87000',
     name: 'What is a Router — Really?',
@@ -2641,6 +2937,32 @@ ${[
 };
 
 
+
+// ── CARD NAVIGATION ────────────────────────────────────────────
+const NAV_SECTIONS = [
+  { label: 'Devices',   ids: ['router','switch','firewall','wap'] },
+  { label: 'Concepts',  ids: ['osi','ip','ports','subnet'] },
+  { label: 'Week 1',    ids: ['s00l00','s00l01','w1l3','w1l4','w1l5','w1l6'] },
+];
+
+function getNavContext(id) {
+  for (const sec of NAV_SECTIONS) {
+    const idx = sec.ids.indexOf(id);
+    if (idx !== -1) {
+      return {
+        label: sec.label,
+        ids: sec.ids,
+        idx,
+        prev: idx > 0 ? sec.ids[idx - 1] : null,
+        next: idx < sec.ids.length - 1 ? sec.ids[idx + 1] : null,
+        total: sec.ids.length,
+        pos: idx + 1,
+      };
+    }
+  }
+  return null;
+}
+
 function showCard(id) {
   if (!CARDS[id]) return;
   current = id;
@@ -2678,6 +3000,17 @@ function renderCard(id) {
     </div>
     <div class="card-body">
       <p class="oneliner">${c.oneliner}</p>
+      ${(()=>{
+        const nav = getNavContext(id);
+        if (!nav) return '';
+        const prevName = nav.prev ? CARDS[nav.prev]?.name : null;
+        const nextName = nav.next ? CARDS[nav.next]?.name : null;
+        return `<div class="card-nav">
+          <button class="card-nav-btn" onclick="showCard('${nav.prev}')" ${!nav.prev?'disabled':''}>← ${prevName||''}</button>
+          <div class="card-nav-progress">${nav.pos} / ${nav.total} · ${nav.label}</div>
+          <button class="card-nav-btn" onclick="showCard('${nav.next}')" ${!nav.next?'disabled':''}>${nextName||''} →</button>
+        </div>`;
+      })()}
       <div class="hook-label">Memory hook</div><div class="hook-box">${c.hook}</div>
       ${visualHtml}
       ${extraHtml}
@@ -2768,6 +3101,7 @@ function showHome() {
         { id:'osi',   icon:'OS', bg:'#EEEAFF', col:'#5B36C4', name:'OSI Model',        sub:'7-layer reference model' },
         { id:'ip',    icon:'IP', bg:'#E0EFFF', col:'#0A74D4', name:'IP Addressing',    sub:'Layer 3 · logical addressing' },
         { id:'ports', icon:'PT', bg:'#EEEAFF', col:'#5B36C4', name:'Well-Known Ports', sub:'TCP/UDP · service identifiers' },
+        { id:'subnet', icon:'SN', bg:'#FFF6DC', col:'#B87000', name:'Subnetting', sub:'Layer 3 · network division' },
       ]},
       { label: 'Week 1', items: [
         { id:'s00l00', icon:'L0', bg:'#E0EFFF', col:'#0A74D4', name:'Lesson 0', sub:'What is a Network?' },
@@ -2797,6 +3131,198 @@ function showHome() {
   </div>`;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ── SUBNET VISUAL RULER ───────────────────────────────────────
+(function() {
+  const PREFIXES = [24,25,26,27,28,29,30];
+  const COLORS = [
+    {bg:'#E0EFFF',bd:'#0A74D4',tc:'#0A3A6E'},
+    {bg:'#D8F5EC',bd:'#0A5C47',tc:'#064030'},
+    {bg:'#FFF6DC',bd:'#B87000',tc:'#7A4008'},
+    {bg:'#FFE0E0',bd:'#9B1C1C',tc:'#6A1515'},
+    {bg:'#EEEAFF',bd:'#5B36C4',tc:'#3B1FA0'},
+    {bg:'#DCF7F4',bd:'#0A8E82',tc:'#065E56'},
+    {bg:'#FFE4DB',bd:'#882E12',tc:'#5C1F0A'},
+    {bg:'#ECEAE0',bd:'#3D3C38',tc:'#1A1A18'},
+  ];
+  let selP = 26, clickedOct = null;
+
+  function bs(p) { const b=Math.pow(2,32-p)%256; return b===0?256:b; }
+  function bc(p) { const b=bs(p); return b===256?1:256/b; }
+  function col(i) { return COLORS[i%COLORS.length]; }
+
+  function render() {
+    const ruler = document.getElementById('snr-ruler');
+    const lbls  = document.getElementById('snr-labels');
+    if (!ruler) return;
+    ruler.innerHTML = ''; lbls.innerHTML = '';
+    const b=bs(selP), n=bc(selP);
+    for (let i=0;i<n;i++) {
+      const c=col(i), pct=(b/256)*100;
+      const d=document.createElement('div');
+      d.style.cssText='position:absolute;top:0;left:'+(i*pct)+'%;width:'+pct+'%;height:100%;background:'+c.bg+';border-right:1.5px solid '+c.bd+';box-sizing:border-box;transition:filter .1s';
+      d.dataset.blk=i;
+      if (b>=32) {
+        const t=document.createElement('div');
+        t.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:600;color:'+c.tc+';white-space:nowrap;pointer-events:none;font-family:\'DM Mono\',monospace';
+        t.textContent=(i*b)+'\u2013'+(i*b+b-1);
+        d.appendChild(t);
+      }
+      ruler.appendChild(d);
+      if (n<=16||i%2===0) {
+        const l=document.createElement('div');
+        l.style.cssText='position:absolute;left:'+(i*pct)+'%;transform:translateX(-50%);font-size:10px;color:#888780;font-family:\'DM Mono\',monospace';
+        l.textContent=i*b;
+        lbls.appendChild(l);
+      }
+    }
+    if (clickedOct!==null) doClick(clickedOct, false);
+  }
+
+  function highlight(oct, clicked) {
+    const ruler=document.getElementById('snr-ruler');
+    if (!ruler) return;
+    const b=bs(selP), bi=Math.floor(oct/b);
+    Array.from(ruler.children).forEach((d,i)=>{
+      d.style.filter=i===bi?'brightness(0.82)':'';
+      d.style.outline=i===bi?'2.5px solid #0F0F0D':'';
+    });
+    const net=bi*b, bcast=net+b-1, usable=b-2;
+    document.getElementById('snr-hover').textContent=
+      '.'+oct+' \u2192 block '+net+'\u2013'+bcast+' \u00b7 usable hosts: '+usable;
+    if (clicked) doClick(oct, true);
+  }
+
+  function doClick(oct, update) {
+    clickedOct=oct;
+    const b=bs(selP), bi=Math.floor(oct/b);
+    const net=bi*b, bcast=net+b-1, first=net+1, last=bcast-1, usable=b-2;
+    const base='192.168.1.';
+    const cards=[
+      {lbl:'Network address', val:base+net,   bg:'#E0EFFF',tc:'#0A3A6E'},
+      {lbl:'First host',      val:base+first, bg:'#D8F5EC',tc:'#064030'},
+      {lbl:'Last host',       val:base+(b>2?last:first), bg:'#D8F5EC',tc:'#064030'},
+      {lbl:'Broadcast',       val:base+bcast, bg:'#FFE0E0',tc:'#6A1515'},
+      {lbl:'Usable hosts',    val:String(usable),bg:'#EEEAFF',tc:'#3B1FA0'},
+      {lbl:'Block size',      val:String(b),  bg:'#FFF6DC',tc:'#7A4008'},
+    ];
+    const el=document.getElementById('snr-cards');
+    if (el) el.innerHTML=cards.map(c=>'<div class="snr-card" style="background:'+c.bg+'"><div class="lbl" style="color:'+c.tc+'">'+c.lbl+'</div><div class="val" style="color:'+c.tc+'">'+c.val+'</div></div>').join('');
+    const hint=document.getElementById('snr-hint');
+    if (hint) hint.textContent='Showing results for .'+oct+' /'+selP+' \u00b7 click another address or change prefix';
+  }
+
+  function buildBtns() {
+    const wrap=document.getElementById('snr-btns');
+    if (!wrap) return;
+    PREFIXES.forEach(p=>{
+      const btn=document.createElement('button');
+      btn.className='snr-pfx-btn'+(p===selP?' active':'');
+      btn.textContent='/'+p;
+      btn.addEventListener('click',()=>{
+        selP=p; clickedOct=null;
+        document.querySelectorAll('.snr-pfx-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('snr-cards').innerHTML='';
+        document.getElementById('snr-hover').textContent='';
+        document.getElementById('snr-hint').textContent='Hover to explore \u00b7 click to pin an address';
+        render();
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function attachEvents() {
+    const ruler=document.getElementById('snr-ruler');
+    if (!ruler) return;
+    ruler.addEventListener('mousemove',function(e){
+      const r=this.getBoundingClientRect();
+      highlight(Math.min(255,Math.floor(((e.clientX-r.left)/r.width)*256)),false);
+    });
+    ruler.addEventListener('mouseleave',function(){
+      Array.from(this.children).forEach(d=>{d.style.filter='';d.style.outline='';});
+      if (clickedOct===null) document.getElementById('snr-hover').textContent='';
+    });
+    ruler.addEventListener('click',function(e){
+      const r=this.getBoundingClientRect();
+      highlight(Math.min(255,Math.floor(((e.clientX-r.left)/r.width)*256)),true);
+    });
+  }
+
+  function init() {
+    if (!document.getElementById('snr-ruler')) return;
+    buildBtns(); render(); attachEvents();
+  }
+
+  document.addEventListener('toggle',function(e){
+    if (e.target&&e.target.open) setTimeout(init, 50);
+  },true);
+})();
+
+
+(function() {
+  const PREFIXES = [
+    {prefix:24,block:256},{prefix:25,block:128},{prefix:26,block:64},
+    {prefix:27,block:32},{prefix:28,block:16},{prefix:29,block:8},{prefix:30,block:4},
+  ];
+  const NETS = [
+    [10,0],[10,1],[10,10],[10,168],[172,16],[172,17],[172,20],[172,31],[192,168],
+  ];
+  let cur = {};
+  function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+  function gen(){
+    const p=PREFIXES[rand(0,PREFIXES.length-1)];
+    const net=NETS[rand(0,NETS.length-1)];
+    const t=rand(0,254);
+    const no=rand(0,Math.floor(256/p.block)-1)*p.block;
+    const ho=rand(1,p.block-2);
+    return {
+      ip:net[0]+'.'+net[1]+'.'+t+'.'+(no+ho),
+      prefix:p.prefix,block:p.block,
+      network:net[0]+'.'+net[1]+'.'+t+'.'+no,
+      broadcast:net[0]+'.'+net[1]+'.'+t+'.'+(no+p.block-1),
+      first:net[0]+'.'+net[1]+'.'+t+'.'+(no+1),
+      hosts:String(p.block-2),
+    };
+  }
+  window.snNew=function(){
+    const ipEl=document.getElementById('sn-ip');
+    if(!ipEl)return;
+    cur=gen();
+    ipEl.textContent=cur.ip;
+    document.getElementById('sn-prefix').textContent=' /'+cur.prefix;
+    ['net','bcast','first','hosts'].forEach(function(f){
+      const el=document.getElementById('sn-'+f);
+      const hint=document.getElementById('sn-'+f+'-hint');
+      if(el){el.value='';el.className='';}
+      if(hint){hint.textContent='';hint.className='sn-hint';}
+    });
+    const res=document.getElementById('sn-result');
+    if(res)res.style.display='none';
+    const ref=document.getElementById('sn-ref');
+    if(ref)ref.textContent='';
+  };
+  window.snCheck=function(){
+    if(!cur.network)return;
+    const map={net:cur.network,bcast:cur.broadcast,first:cur.first,hosts:cur.hosts};
+    let ok=true;
+    Object.keys(map).forEach(function(k){
+      const inp=document.getElementById('sn-'+k);
+      const hint=document.getElementById('sn-'+k+'-hint');
+      const pass=inp&&inp.value.trim()===map[k];
+      if(!pass)ok=false;
+      if(inp)inp.className=pass?'correct':'wrong';
+      if(hint){hint.textContent=pass?'✓ correct':'✗ '+map[k];hint.className='sn-hint '+(pass?'correct':'wrong');}
+    });
+    const res=document.getElementById('sn-result');
+    if(res){res.style.display='block';res.className='sn-result '+(ok?'pass':'fail');res.textContent=ok?'✓ All correct — nice work!':'Not quite — correct answers shown above.';}
+    const ref=document.getElementById('sn-ref');
+    if(ref)ref.textContent='Block: '+cur.block+' · '+cur.network+' → '+cur.broadcast+' · Usable: '+cur.hosts;
+  };
+  document.addEventListener('toggle',function(e){
+    if(e.target&&e.target.open&&document.getElementById('sn-ip')&&!cur.network)window.snNew();
+  },true);
+})();
 
 let current = '__home';
 showHome();
