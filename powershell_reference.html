@@ -132,6 +132,8 @@
   .t-firewall{color:var(--t-firewall);background:transparent;}
   .t-session{color:var(--t-session);background:transparent;}
   .t-ssh{color:var(--t-ssh);background:transparent;}
+  .t-eop{color:#fbbf24;background:transparent;}
+  .t-reports{color:#94a3b8;background:transparent;}
 
   .cmds{list-style:none;padding:2px 0 6px;}
   .cmds li{padding:3px 9px 3px 11px;border-left:2px solid transparent;transition:background 0.1s;cursor:pointer;display:flex;flex-direction:row;align-items:center;gap:6px;}
@@ -694,6 +696,8 @@
     <a class="jump" href="#ps11" data-filter="t-firewall"><span class="jdot" style="background:var(--t-firewall)"></span>Mail Flow</a>
     <a class="jump" href="#ps12" data-filter="t-session"><span class="jdot" style="background:var(--t-session)"></span>Distribution</a>
     <a class="jump" href="#ps13" data-filter="t-ssh"><span class="jdot" style="background:var(--t-ssh)"></span>Policies</a>
+    <a class="jump" href="#ps14" data-filter="t-eop"><span class="jdot" style="background:#fbbf24"></span>EOP</a>
+    <a class="jump" href="#ps15" data-filter="t-reports"><span class="jdot" style="background:#94a3b8"></span>Reports</a>
   </div>
 </div>
 
@@ -909,7 +913,7 @@
       <li data-cmd="Get-ManagementRoleAssignment" data-desc="Get role assignments"><div class="li-text"><span class="d">Get role assignments</span><span class="c">Get-ManagementRoleAssignment</span></div><span class="star">&#9734;</span></li>
     </ul>
   </div>
-  <div class="sec t-arp" id="ps14">
+  <div class="sec t-eop" id="ps14">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Online Protection</span><span class="sec-label-right"><span class="mod-badge mod-exo" onclick="event.stopPropagation()">EXO<div class="mod-tip"><div class="mod-tip-title">Requires: ExchangeOnlineManagement</div><code class="mod-tip-cmd">Install-Module ExchangeOnlineManagement</code><div class="mod-tip-note">Connect first: Connect-ExchangeOnline -UserPrincipalName admin@domain.com<br>Works for Exchange Online and on-prem (with EMS).</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-HostedContentFilterPolicy" data-desc="Get spam filter policy"><div class="li-text"><span class="d">Get spam filter policy</span><span class="c">Get-HostedContentFilterPolicy</span></div><span class="star">&#9734;</span></li>
@@ -921,7 +925,7 @@
       <li data-cmd="Get-HostedOutboundSpamFilterPolicy" data-desc="Get outbound spam policy"><div class="li-text"><span class="d">Get outbound spam policy</span><span class="c">Get-HostedOutboundSpamFilterPolicy</span></div><span class="star">&#9734;</span></li>
     </ul>
   </div>
-  <div class="sec t-routing" id="ps15">
+  <div class="sec t-reports" id="ps15">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Reports</span><span class="sec-label-right"><span class="mod-badge mod-exo" onclick="event.stopPropagation()">EXO<div class="mod-tip"><div class="mod-tip-title">Requires: ExchangeOnlineManagement</div><code class="mod-tip-cmd">Install-Module ExchangeOnlineManagement</code><div class="mod-tip-note">Connect first: Connect-ExchangeOnline -UserPrincipalName admin@domain.com<br>Works for Exchange Online and on-prem (with EMS).</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-Mailbox -InactiveMailboxOnly" data-desc="Get inactive mailboxes"><div class="li-text"><span class="d">Get inactive mailboxes</span><span class="c">Get-Mailbox -InactiveMailboxOnly</span></div><span class="star">&#9734;</span></li>
@@ -935,6 +939,7 @@
 </div>
 </div></div>
 </div>
+<div id="recent-tray">
   <div class="recent-header">
     <span>⏱ Recently Copied</span>
     <button class="recent-clear" id="recent-clear-btn">Clear</button>
@@ -1300,12 +1305,12 @@
 
   function applyFilter(typeClass) {
     const q = document.getElementById('search').value.trim().toLowerCase();
-    document.querySelectorAll('.col').forEach(col => {
+    document.querySelectorAll('.col').forEach(function(col) {
       let colMatch = false;
-      col.querySelectorAll('.sec').forEach(sec => {
+      col.querySelectorAll('.sec').forEach(function(sec) {
         const secMatches = !typeClass || sec.classList.contains(typeClass);
         let secHasItems = false;
-        sec.querySelectorAll('.cmds li').forEach(li => {
+        sec.querySelectorAll('.cmds li').forEach(function(li) {
           const txtMatch = !q || ((li.dataset.cmd||'')+' '+li.textContent).toLowerCase().includes(q);
           const show = secMatches && txtMatch;
           li.classList.toggle('hidden', !show);
@@ -1314,24 +1319,31 @@
         sec.classList.toggle('all-hidden', !secHasItems);
         if (secHasItems) sec.classList.remove('collapsed');
       });
-      col.classList.toggle('no-match', !colMatch);
+      col.classList.toggle('col-hidden', typeClass && !colMatch);
+      col.classList.remove('no-match');
     });
     const count = document.querySelectorAll('.cmds li:not(.hidden)').length;
     document.getElementById('search-count').textContent =
       (typeClass || q) ? count + ' command' + (count !== 1 ? 's' : '') + ' matched' : '';
   }
 
-  document.querySelectorAll('.jump[data-filter]').forEach(btn => {
-    btn.addEventListener('click', e => {
+  document.querySelectorAll('.jump[data-filter]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
       e.preventDefault();
       const f = btn.dataset.filter;
       if (activeFilter === f) {
-        // toggle off — clear filter
         activeFilter = null;
         btn.classList.remove('active');
-        applyFilter(null);
+        document.querySelectorAll('.col').forEach(function(col) {
+          col.classList.remove('col-hidden', 'no-match');
+        });
+        document.querySelectorAll('.sec').forEach(function(sec) {
+          sec.classList.remove('all-hidden');
+          sec.querySelectorAll('.cmds li').forEach(function(li) { li.classList.remove('hidden'); });
+        });
+        document.getElementById('search-count').textContent = '';
       } else {
-        document.querySelectorAll('.jump').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.jump').forEach(function(b) { b.classList.remove('active'); });
         activeFilter = f;
         btn.classList.add('active');
         applyFilter(f);
@@ -1343,12 +1355,11 @@
   document.getElementById('search').addEventListener('input', function() {
     const q = this.value.trim().toLowerCase();
     if (!activeFilter && !q) {
-      // reset everything
-      document.querySelectorAll('.col').forEach(col => {
-        col.classList.remove('no-match');
-        col.querySelectorAll('.sec').forEach(sec => {
+      document.querySelectorAll('.col').forEach(function(col) {
+        col.classList.remove('no-match', 'col-hidden');
+        col.querySelectorAll('.sec').forEach(function(sec) {
           sec.classList.remove('all-hidden');
-          sec.querySelectorAll('.cmds li').forEach(li => {
+          sec.querySelectorAll('.cmds li').forEach(function(li) {
             li.classList.remove('hidden');
             highlight(li, '');
           });
@@ -1357,29 +1368,30 @@
       document.getElementById('search-count').textContent = '';
       return;
     }
-    // merged filter + search
     let count = 0;
-    document.querySelectorAll('.col').forEach(col => {
+    document.querySelectorAll('.col').forEach(function(col) {
       let colMatch = false;
-      col.querySelectorAll('.sec').forEach(sec => {
+      col.querySelectorAll('.sec').forEach(function(sec) {
         const secMatches = !activeFilter || sec.classList.contains(activeFilter);
         let secHasItems = false;
-        sec.querySelectorAll('.cmds li').forEach(li => {
+        sec.querySelectorAll('.cmds li').forEach(function(li) {
           const txtMatch = !q || ((li.dataset.cmd||'')+' '+li.textContent).toLowerCase().includes(q);
           const show = secMatches && txtMatch;
           li.classList.toggle('hidden', !show);
           const c = li.querySelector('.c'), d = li.querySelector('.d');
           if (show) {
             secHasItems = true; colMatch = true; count++;
-            if (q) { highlight(c, q); highlight(d, q); }
+            if (q && c) highlight(c, q);
+            if (q && d) highlight(d, q);
           } else {
-            [c,d].forEach(el => { el.querySelectorAll('mark').forEach(m => m.replaceWith(document.createTextNode(m.textContent))); el.normalize(); });
+            [c,d].forEach(function(el) { if(el){el.querySelectorAll('mark').forEach(function(m){m.replaceWith(document.createTextNode(m.textContent));}); el.normalize();} });
           }
         });
         sec.classList.toggle('all-hidden', !secHasItems);
         if (secHasItems) sec.classList.remove('collapsed');
       });
-      col.classList.toggle('no-match', !colMatch);
+      col.classList.toggle('col-hidden', activeFilter && !colMatch);
+      col.classList.remove('no-match');
     });
     document.getElementById('search-count').textContent = count + ' command' + (count !== 1 ? 's' : '') + ' matched';
   });
