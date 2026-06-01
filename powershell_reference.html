@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Network CLI Cheatsheet</title>
+<title>PowerShell Cmdlet Reference</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg:#080d1a; --surface:#0d1220; --surface2:#0d1220; --border:#1c2330;
     --text:#cdd9e5; --muted:#566573;
-    --forti:#ff6b35; --unifi:#3d9be9; --huawei:#e8003d;
-    --windows:#6abf69; --putty:#d4a843; --cisco:#1ba8ff;
+
     --t-interface:#64d8cb; --t-routing:#f4c542; --t-dns:#a78bfa;
     --t-arp:#fb923c; --t-conn:#34d399; --t-vpn:#f472b6;
     --t-capture:#60a5fa; --t-firewall:#fbbf24; --t-session:#e879f9; --t-ssh:#d4a843;
@@ -31,7 +30,6 @@
   .pills.has-active .pill:not(.active){opacity:0.2;color:#444 !important;border-color:#333 !important;}
   .col.col-hidden{display:none;}
   .tb-row2{display:flex;justify-content:center;padding:5px 0;}
-  #search-wrap{position:relative;flex:1;max-width:480px;}
   #search{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.75rem;padding:6px 32px 6px 10px;width:100%;outline:none;transition:border-color 0.2s;}
   #search::placeholder{color:var(--muted);}
   #search:focus{border-color:#3d6491;}
@@ -49,36 +47,80 @@
   .leg{display:flex;align-items:center;gap:5px;font-size:0.62rem;color:#8b949e;}
   .leg-sq{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
 
-  #grid-wrap{padding:0 20px;}
-  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px 20px 40px;}
+  #grid-wrap{padding:12px 20px 0;}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px 0 40px;}
 
   .col{background:#0b1120;border:1px solid rgba(255,255,255,0.06);border-radius:8px;scroll-margin-top:120px;}
   .col-head{position:sticky;top:0;z-index:10;padding:9px 11px;display:flex;align-items:center;gap:7px;border-bottom:2px solid;border-radius:7px 7px 0 0;}
   .col-head .ico{font-size:1rem;line-height:1;}
   .col-head .name{font-family:'Orbitron',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
 
-  .cisco   .col-head{border-color:var(--cisco);  background:#080d1a;}
-  .forti   .col-head{border-color:var(--forti);  background:#080d1a;}
-  .unifi   .col-head{border-color:var(--unifi);  background:#080d1a;}
-  .huawei  .col-head{border-color:var(--huawei); background:#080d1a;}
-  .windows .col-head{border-color:var(--windows);background:#080d1a;}
-  .putty   .col-head{border-color:var(--putty);  background:#120d03;}
 
-  .cisco   .name{color:var(--cisco);}
-  .forti   .name{color:var(--forti);}
-  .unifi   .name{color:var(--unifi);}
-  .huawei  .name{color:var(--huawei);}
-  .windows .name{color:var(--windows);}
-  .putty   .name{color:var(--putty);}
 
   .sec{border-bottom:1px solid var(--border);}
   .sec:last-child{border-bottom:none;}
   .sec-label{padding:5px 9px 3px;font-size:0.63rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;background:#0d1e30;}
+  .sec-label-right{display:flex;align-items:center;gap:8px;}
   .sec-label-left{display:flex;align-items:center;gap:5px;}
   .sec-label-left::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.85;}
   .sec-toggle{font-size:0.72rem;opacity:0.4;transition:transform 0.2s;flex-shrink:0;}
   .sec.collapsed .sec-toggle{transform:rotate(-90deg);opacity:0.25;}
   .sec.collapsed .cmds{display:none;}
+
+  /* ── MODULE REQUIREMENT BADGE ── */
+  .mod-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'Orbitron', sans-serif; font-size: 0.52rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 3px; border: 1px solid;
+    cursor: default; pointer-events: auto; white-space: nowrap;
+    flex-shrink: 0; position: relative;
+  }
+  .mod-badge::before { content: none !important; }
+  .mod-rsat     { color:#64d8cb; border-color:rgba(100,216,203,0.35); background:rgba(100,216,203,0.07); }
+  .mod-graph    { color:#34d399; border-color:rgba(52,211,153,0.35);  background:rgba(52,211,153,0.07); }
+  .mod-exo      { color:#fb923c; border-color:rgba(251,146,60,0.35);  background:rgba(251,146,60,0.07); }
+  .mod-onprem   { color:#a78bfa; border-color:rgba(167,139,250,0.35); background:rgba(167,139,250,0.07); }
+  .mod-defender { color:#f472b6; border-color:rgba(244,114,182,0.35); background:rgba(244,114,182,0.07); }
+  .mod-badge .mod-tip {
+    display: none; position: absolute; bottom: calc(100% + 7px); left: 50%;
+    transform: translateX(-50%); background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 5px;
+    padding: 7px 11px; min-width: 280px; z-index: 200;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6); pointer-events: none;
+  }
+  .mod-badge:hover .mod-tip { display: block; }
+  .mod-tip-title { font-family:'Orbitron',sans-serif; font-size:0.58rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#e6edf3; margin-bottom:4px; }
+  .mod-tip-cmd { font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:#4ade80; background:rgba(0,0,0,0.4); border-radius:3px; padding:3px 7px; display:block; margin-bottom:4px; }
+  .mod-tip-note { font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#566573; line-height:1.5; }
+  .mod-tip::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:rgba(255,255,255,0.12); }
+
+  /* ── EXAMPLE HINT BUTTON ── */
+  .hint-btn {
+    width:15px; height:15px; border-radius:50%;
+    border:1px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.06);
+    color:#38bdf8; font-family:'Orbitron',sans-serif; font-size:0.5rem; font-weight:700;
+    line-height:1; cursor:default; flex-shrink:0; display:flex;
+    align-items:center; justify-content:center; opacity:0.45;
+    transition:opacity 0.15s,border-color 0.15s,background 0.15s;
+    position:relative; user-select:none;
+  }
+  .cmds li:hover .hint-btn { opacity:1; }
+  .hint-btn:hover { border-color:rgba(56,189,248,0.7); background:rgba(56,189,248,0.12); }
+  .hint-tip {
+    display:none; position:absolute; bottom:calc(100% + 8px); right:0;
+    background:#0d1117; border:1px solid rgba(56,189,248,0.2); border-radius:6px;
+    padding:8px 12px; min-width:200px; z-index:300;
+    box-shadow:0 8px 28px rgba(0,0,0,0.65); pointer-events:none; white-space:nowrap;
+  }
+  .hint-btn:hover .hint-tip { display:block; }
+  .hint-tip-title { font-family:'Orbitron',sans-serif; font-size:0.52rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#38bdf8; margin-bottom:7px; padding-bottom:5px; border-bottom:1px solid rgba(56,189,248,0.12); }
+  .hint-row { display:flex; align-items:baseline; gap:8px; margin-bottom:4px; }
+  .hint-row:last-child { margin-bottom:0; }
+  .hint-param { font-family:'Orbitron',sans-serif; font-size:0.52rem; font-weight:700; letter-spacing:0.06em; color:#94a3b8; min-width:70px; flex-shrink:0; }
+  .hint-arrow { color:#334155; font-size:0.6rem; flex-shrink:0; }
+  .hint-val { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:#f4c542; }
+  .hint-tip::after { content:''; position:absolute; top:100%; right:10px; border:5px solid transparent; border-top-color:rgba(56,189,248,0.2); }
 
   .t-interface{color:var(--t-interface);background:transparent;}
   .t-routing{color:var(--t-routing);background:transparent;}
@@ -130,6 +172,7 @@
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   footer{text-align:center;margin-top:30px;color:#1e2a35;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;}
+
 
   /* ══ STAR / FAVOURITE ══ */
   .star {
@@ -383,6 +426,142 @@
     footer{color:#999;}
   }
 
+  /* ── BEFORE YOU START BANNER ── */
+  #prereq {
+    margin: 12px 0 0;
+    border: 1px solid rgba(56,189,248,0.15);
+    border-radius: 8px;
+    background: #090e1c;
+    overflow: hidden;
+  }
+  #prereq-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    cursor: pointer;
+    user-select: none;
+    background: #0b1220;
+    border-bottom: 1px solid rgba(56,189,248,0.1);
+    transition: background 0.15s;
+  }
+  #prereq-header:hover { background: #0d1528; }
+  #prereq-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #prereq-header-left .prereq-icon {
+    font-size: 0.9rem;
+  }
+  #prereq-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #38bdf8;
+  }
+  #prereq-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.72rem;
+    color: #566573;
+    letter-spacing: 0.05em;
+  }
+  #prereq-toggle {
+    font-size: 0.72rem;
+    color: #38bdf8;
+    opacity: 0.5;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  #prereq.collapsed #prereq-toggle { transform: rotate(-90deg); opacity: 0.3; }
+  #prereq-body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  #prereq.collapsed #prereq-body { display: none; }
+  .prereq-card {
+    padding: 14px 18px;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+  }
+  .prereq-card:last-child { border-right: none; }
+  .prereq-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .prereq-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .prereq-card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .prereq-card-when {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .prereq-step {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .prereq-step-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.48rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #334155;
+  }
+  .prereq-cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: #4ade80;
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px;
+    padding: 5px 9px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: border-color 0.15s, background 0.15s;
+    word-break: break-all;
+    position: relative;
+  }
+  .prereq-cmd:hover {
+    border-color: rgba(74,222,128,0.3);
+    background: rgba(74,222,128,0.05);
+  }
+  .prereq-cmd:hover::after {
+    content: '📋';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.65rem;
+    opacity: 0.5;
+  }
+  .prereq-note {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.68rem;
+    color: #334155;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
   .site-footer { margin-top: 4rem; border-top: 1px solid rgba(56,189,248,0.15); background: #060b14; }
   .footer-inner { max-width: 1400px; margin: 0 auto; padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
   .footer-brand { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 3px; text-decoration: none; }
@@ -503,15 +682,13 @@
       <a class="pill" data-col="col-elevated" href="#" style="color:#f59e0b;border-color:#f59e0b">Elevated</a>
     </div>
   </div>
-  </div>
-
+  
   <!-- Row 3: Category filter centred -->
   <div class="tb-row3">
     <a class="jump" href="#ps0" data-filter="t-interface"><span class="jdot" style="background:var(--t-interface)"></span>AD Users</a>
     <a class="jump" href="#ps1" data-filter="t-routing"><span class="jdot" style="background:var(--t-routing)"></span>AD Groups</a>
     <a class="jump" href="#ps2" data-filter="t-dns"><span class="jdot" style="background:var(--t-dns)"></span>AD Computers</a>
     <a class="jump" href="#ps3" data-filter="t-arp"><span class="jdot" style="background:var(--t-arp)"></span>AD Domain</a>
-    <a class="jump" href="#ps4" data-filter="t-conn"><span class="jdot" style="background:var(--t-conn)"></span>Azure AD</a>
     <a class="jump" href="#ps5" data-filter="t-vpn"><span class="jdot" style="background:var(--t-vpn)"></span>MS Graph</a>
     <a class="jump" href="#ps10" data-filter="t-capture"><span class="jdot" style="background:var(--t-capture)"></span>Mailboxes</a>
     <a class="jump" href="#ps11" data-filter="t-firewall"><span class="jdot" style="background:var(--t-firewall)"></span>Mail Flow</a>
@@ -520,19 +697,101 @@
   </div>
 </div>
 
-<div id="recent-tray">
-  <div class="recent-header">
-    <span>⏱ Recently Copied</span>
-    <button class="recent-clear" id="recent-clear-btn">Clear</button>
+
+
+<div id="grid-wrap">
+
+<!-- ══ BEFORE YOU START ══ -->
+<div id="prereq" class="collapsed">
+  <div id="prereq-header" onclick="togglePrereq()">
+    <div id="prereq-header-left">
+      <span class="prereq-icon">⚡</span>
+      <div>
+        <div id="prereq-title">Before You Start</div>
+        <div id="prereq-sub">Each section requires a module and a connection — click a command below to copy it</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="font-family:'Rajdhani',sans-serif;font-size:0.72rem;color:#334155;letter-spacing:0.05em;">⚠ Modules may already be installed — check before running install steps</span>
+      <span id="prereq-toggle">&#9662;</span>
+    </div>
   </div>
-  <div id="recent-list"></div>
+  <div id="prereq-body">
+
+    <!-- AD / RSAT -->
+    <div class="prereq-card">
+      <div class="prereq-card-header">
+        <span class="prereq-dot" style="background:#64d8cb;box-shadow:0 0 6px rgba(100,216,203,0.5)"></span>
+        <span class="prereq-card-title" style="color:#64d8cb">On-Prem Active Directory</span>
+      </div>
+      <div class="prereq-card-when">Use for: AD Users, Groups, Computers, Domain &amp; Forest queries against your on-premises directory.</div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">0 — Check if already installed</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Get-Module -ListAvailable -Name ActiveDirectory</div>
+      </div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">1 — Install RSAT (Windows 10/11)</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Add-WindowsCapability -Online -Name Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0</div>
+      </div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">2 — Import module</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Import-Module ActiveDirectory</div>
+      </div>
+      <div class="prereq-note">On a domain controller or member server, the module is already available — skip step 1.</div>
+    </div>
+
+    <!-- MS Graph -->
+    <div class="prereq-card">
+      <div class="prereq-card-header">
+        <span class="prereq-dot" style="background:#34d399;box-shadow:0 0 6px rgba(52,211,153,0.5)"></span>
+        <span class="prereq-card-title" style="color:#34d399">Microsoft Graph (Entra ID)</span>
+      </div>
+      <div class="prereq-card-when">Use for: Entra ID users, groups, devices, licences, conditional access, sign-in &amp; audit logs.</div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">0 — Check if already installed</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Get-Module -ListAvailable -Name Microsoft.Graph</div>
+      </div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">1 — Install module (once)</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Install-Module Microsoft.Graph -Scope CurrentUser</div>
+      </div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">2 — Connect (adjust scopes as needed)</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Connect-MgGraph -Scopes "User.Read.All","Group.Read.All","AuditLog.Read.All"</div>
+      </div>
+      <div class="prereq-note">You will be prompted to sign in with a browser. Requires an Entra ID account with appropriate permissions.</div>
+    </div>
+
+    <!-- Exchange Online -->
+    <div class="prereq-card">
+      <div class="prereq-card-header">
+        <span class="prereq-dot" style="background:#fb923c;box-shadow:0 0 6px rgba(251,146,60,0.5)"></span>
+        <span class="prereq-card-title" style="color:#fb923c">Exchange Online</span>
+      </div>
+      <div class="prereq-card-when">Use for: Mailboxes, mail flow, distribution groups, policies and EOP — runs against Exchange Online regardless of where you launch it from.</div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">0 — Check if already installed</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Get-Module -ListAvailable -Name ExchangeOnlineManagement</div>
+      </div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">1 — Install module (once)</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Install-Module ExchangeOnlineManagement -Scope CurrentUser</div>
+      </div>
+      <div class="prereq-step">
+        <span class="prereq-step-label">2 — Connect</span>
+        <div class="prereq-cmd" onclick="copyPrereq(this)">Connect-ExchangeOnline -UserPrincipalName admin@yourdomain.com</div>
+      </div>
+      <div class="prereq-note">Requires Exchange Admin or Global Admin. Commands marked EMS require on-prem Exchange Management Shell instead.</div>
+    </div>
+
+  </div>
 </div>
 
-<div id="grid-wrap"><div class="grid">
+<div class="grid">
 <div class="col" id="col-standard">
-  <div class="col-head" style="border-color:#38bdf8"><span class="name" style="color:#38bdf8">Standard Commands</span></div>
+  <div class="col-head" style="border-color:#38bdf8;background:#080d1a;"><span class="name" style="color:#38bdf8">Standard Commands</span></div>
   <div class="sec t-interface" id="ps0">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">AD Users</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">AD Users</span><span class="sec-label-right"><span class="mod-badge mod-rsat" onclick="event.stopPropagation()">RSAT<div class="mod-tip"><div class="mod-tip-title">Requires: ActiveDirectory Module</div><code class="mod-tip-cmd">Import-Module ActiveDirectory</code><div class="mod-tip-note">Included with RSAT on Windows 10/11.<br>On Server: Add-WindowsFeature RSAT-AD-PowerShell</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-ADUser -Filter *" data-desc="Get all AD users"><div class="li-text"><span class="d">Get all AD users</span><span class="c">Get-ADUser -Filter *</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-ADUser -Identity &lt;username&gt;" data-desc="Get specific user"><div class="li-text"><span class="d">Get specific user</span><span class="c">Get-ADUser -Identity &lt;username&gt;</span></div><span class="star">&#9734;</span></li>
@@ -547,7 +806,7 @@
     </ul>
   </div>
   <div class="sec t-routing" id="ps1">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">AD Groups</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">AD Groups</span><span class="sec-label-right"><span class="mod-badge mod-rsat" onclick="event.stopPropagation()">RSAT<div class="mod-tip"><div class="mod-tip-title">Requires: ActiveDirectory Module</div><code class="mod-tip-cmd">Import-Module ActiveDirectory</code><div class="mod-tip-note">Included with RSAT on Windows 10/11.<br>On Server: Add-WindowsFeature RSAT-AD-PowerShell</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-ADGroup -Filter *" data-desc="Get all groups"><div class="li-text"><span class="d">Get all groups</span><span class="c">Get-ADGroup -Filter *</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-ADGroup -Identity &#x27;&lt;groupname&gt;&#x27;" data-desc="Get specific group"><div class="li-text"><span class="d">Get specific group</span><span class="c">Get-ADGroup -Identity &#x27;&lt;groupname&gt;&#x27;</span></div><span class="star">&#9734;</span></li>
@@ -559,7 +818,7 @@
     </ul>
   </div>
   <div class="sec t-dns" id="ps2">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">AD Computers</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">AD Computers</span><span class="sec-label-right"><span class="mod-badge mod-rsat" onclick="event.stopPropagation()">RSAT<div class="mod-tip"><div class="mod-tip-title">Requires: ActiveDirectory Module</div><code class="mod-tip-cmd">Import-Module ActiveDirectory</code><div class="mod-tip-note">Included with RSAT on Windows 10/11.<br>On Server: Add-WindowsFeature RSAT-AD-PowerShell</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-ADComputer -Filter *" data-desc="Get all computers"><div class="li-text"><span class="d">Get all computers</span><span class="c">Get-ADComputer -Filter *</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-ADComputer -Identity &lt;computername&gt; -Properties *" data-desc="Get computer properties"><div class="li-text"><span class="d">Get computer properties</span><span class="c">Get-ADComputer -Identity &lt;computername&gt; -Properties *</span></div><span class="star">&#9734;</span></li>
@@ -570,7 +829,7 @@
     </ul>
   </div>
   <div class="sec t-arp" id="ps3">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">AD Domain and Forest</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">AD Domain and Forest</span><span class="sec-label-right"><span class="mod-badge mod-rsat" onclick="event.stopPropagation()">RSAT<div class="mod-tip"><div class="mod-tip-title">Requires: ActiveDirectory Module</div><code class="mod-tip-cmd">Import-Module ActiveDirectory</code><div class="mod-tip-note">Included with RSAT on Windows 10/11.<br>On Server: Add-WindowsFeature RSAT-AD-PowerShell</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-ADDomain" data-desc="Get domain info"><div class="li-text"><span class="d">Get domain info</span><span class="c">Get-ADDomain</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-ADForest" data-desc="Get forest info"><div class="li-text"><span class="d">Get forest info</span><span class="c">Get-ADForest</span></div><span class="star">&#9734;</span></li>
@@ -582,23 +841,9 @@
       <li data-cmd="Get-ADOrganizationalUnit -Filter *" data-desc="Get all OUs"><div class="li-text"><span class="d">Get all OUs</span><span class="c">Get-ADOrganizationalUnit -Filter *</span></div><span class="star">&#9734;</span></li>
     </ul>
   </div>
-  <div class="sec t-conn" id="ps4">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Azure AD / Entra ID</span><span class="sec-toggle">&#9662;</span></div>
-    <ul class="cmds">
-      <li data-cmd="Get-AzureADUser -All $true" data-desc="Get all AAD users"><div class="li-text"><span class="d">Get all AAD users</span><span class="c">Get-AzureADUser -All $true</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-AzureADUser -ObjectId &lt;UPN&gt;" data-desc="Get specific AAD user"><div class="li-text"><span class="d">Get specific AAD user</span><span class="c">Get-AzureADUser -ObjectId &lt;UPN&gt;</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-AzureADGroup -All $true" data-desc="Get all AAD groups"><div class="li-text"><span class="d">Get all AAD groups</span><span class="c">Get-AzureADGroup -All $true</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-AzureADGroupMember -ObjectId &lt;GroupId&gt;" data-desc="Get AAD group members"><div class="li-text"><span class="d">Get AAD group members</span><span class="c">Get-AzureADGroupMember -ObjectId &lt;GroupId&gt;</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-AzureADDevice -All $true" data-desc="Get AAD devices"><div class="li-text"><span class="d">Get AAD devices</span><span class="c">Get-AzureADDevice -All $true</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-AzureADUserLicenseDetail -ObjectId &lt;UPN&gt;" data-desc="Get user licenses"><div class="li-text"><span class="d">Get user licenses</span><span class="c">Get-AzureADUserLicenseDetail -ObjectId &lt;UPN&gt;</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-AzureADServicePrincipal -All $true" data-desc="Get service principals"><div class="li-text"><span class="d">Get service principals</span><span class="c">Get-AzureADServicePrincipal -All $true</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-AzureADDirectoryRole" data-desc="Get directory roles"><div class="li-text"><span class="d">Get directory roles</span><span class="c">Get-AzureADDirectoryRole</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-AzureADDirectoryRoleMember -ObjectId &lt;RoleId&gt;" data-desc="Get role members"><div class="li-text"><span class="d">Get role members</span><span class="c">Get-AzureADDirectoryRoleMember -ObjectId &lt;RoleId&gt;</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-MsolUser -All | Select-Object DisplayName,StrongAuthenticationRequirements" data-desc="Get MFA status"><div class="li-text"><span class="d">Get MFA status</span><span class="c">Get-MsolUser -All | Select-Object DisplayName,StrongAuthenticationRequirements</span></div><span class="star">&#9734;</span></li>
-    </ul>
-  </div>
+
   <div class="sec t-vpn" id="ps5">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">MS Graph (Modern)</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">MS Graph (Modern)</span><span class="sec-label-right"><span class="mod-badge mod-graph" onclick="event.stopPropagation()">GRAPH<div class="mod-tip"><div class="mod-tip-title">Requires: Microsoft.Graph Module</div><code class="mod-tip-cmd">Install-Module Microsoft.Graph</code><div class="mod-tip-note">Microsoft's modern replacement for AzureAD &amp; MSOnline.<br>Connect first: Connect-MgGraph -Scopes "User.Read.All"</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-MgUser -All" data-desc="Get all users"><div class="li-text"><span class="d">Get all users</span><span class="c">Get-MgUser -All</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-MgUser -UserId &lt;UPN&gt;" data-desc="Get user details"><div class="li-text"><span class="d">Get user details</span><span class="c">Get-MgUser -UserId &lt;UPN&gt;</span></div><span class="star">&#9734;</span></li>
@@ -613,9 +858,9 @@
   </div>
 </div>
 <div class="col" id="col-elevated">
-  <div class="col-head" style="border-color:#f59e0b"><span class="name" style="color:#f59e0b">Elevated Commands</span></div>
+  <div class="col-head" style="border-color:#f59e0b;background:#080d1a;"><span class="name" style="color:#f59e0b">Elevated Commands <span style="font-size:0.65rem;color:#94a3b8;letter-spacing:1px;">(Admin)</span></span></div>
   <div class="sec t-capture" id="ps10">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Mailboxes</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Mailboxes</span><span class="sec-label-right"><span class="mod-badge mod-exo" onclick="event.stopPropagation()">EXO<div class="mod-tip"><div class="mod-tip-title">Requires: ExchangeOnlineManagement</div><code class="mod-tip-cmd">Install-Module ExchangeOnlineManagement</code><div class="mod-tip-note">Connect first: Connect-ExchangeOnline -UserPrincipalName admin@domain.com<br>Works for Exchange Online and on-prem (with EMS).</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-Mailbox -ResultSize Unlimited" data-desc="Get all mailboxes"><div class="li-text"><span class="d">Get all mailboxes</span><span class="c">Get-Mailbox -ResultSize Unlimited</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-Mailbox -Identity &lt;email&gt;" data-desc="Get specific mailbox"><div class="li-text"><span class="d">Get specific mailbox</span><span class="c">Get-Mailbox -Identity &lt;email&gt;</span></div><span class="star">&#9734;</span></li>
@@ -630,35 +875,34 @@
     </ul>
   </div>
   <div class="sec t-firewall" id="ps11">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Mail Flow</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Mail Flow</span><span class="sec-label-right"><span class="mod-badge mod-exo" onclick="event.stopPropagation()">EXO<div class="mod-tip"><div class="mod-tip-title">Requires: ExchangeOnlineManagement</div><code class="mod-tip-cmd">Install-Module ExchangeOnlineManagement</code><div class="mod-tip-note">Connect first: Connect-ExchangeOnline -UserPrincipalName admin@domain.com<br>Works for Exchange Online and on-prem (with EMS).</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
-      <li data-cmd="Get-ReceiveConnector" data-desc="Get receive connectors"><div class="li-text"><span class="d">Get receive connectors</span><span class="c">Get-ReceiveConnector</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-SendConnector" data-desc="Get send connectors"><div class="li-text"><span class="d">Get send connectors</span><span class="c">Get-SendConnector</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-ReceiveConnector" data-desc="Get receive connectors"><div class="li-text"><span class="d">Get receive connectors <span class="mod-badge mod-onprem" style="margin-left:6px;" onclick="event.stopPropagation()">EMS<div class="mod-tip"><div class="mod-tip-title">Exchange Management Shell Only</div><div class="mod-tip-note">Requires on-prem Exchange Management Shell (EMS).<br>Not available via Connect-ExchangeOnline.<br>EXO: manage inbound connectors in the M365 admin portal.</div></div></span></span><span class="c">Get-ReceiveConnector</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-SendConnector" data-desc="Get send connectors"><div class="li-text"><span class="d">Get send connectors <span class="mod-badge mod-onprem" style="margin-left:6px;" onclick="event.stopPropagation()">EMS<div class="mod-tip"><div class="mod-tip-title">Exchange Management Shell Only</div><div class="mod-tip-note">Requires on-prem Exchange Management Shell (EMS).<br>Not available via Connect-ExchangeOnline.<br>EXO: manage outbound connectors in the M365 admin portal.</div></div></span></span><span class="c">Get-SendConnector</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-TransportRule" data-desc="Get transport rules"><div class="li-text"><span class="d">Get transport rules</span><span class="c">Get-TransportRule</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-AcceptedDomain" data-desc="Get accepted domains"><div class="li-text"><span class="d">Get accepted domains</span><span class="c">Get-AcceptedDomain</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-EmailAddressPolicy" data-desc="Get email address policies"><div class="li-text"><span class="d">Get email address policies</span><span class="c">Get-EmailAddressPolicy</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-MessageTrackingLog -Sender &lt;email&gt; -Start &#x27;&lt;date&gt;&#x27;" data-desc="Get message tracking log"><div class="li-text"><span class="d">Get message tracking log</span><span class="c">Get-MessageTrackingLog -Sender &lt;email&gt; -Start &#x27;&lt;date&gt;&#x27;</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-MessageTrackingLog -EventId REJECT" data-desc="Get rejected messages"><div class="li-text"><span class="d">Get rejected messages</span><span class="c">Get-MessageTrackingLog -EventId REJECT</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-EmailAddressPolicy" data-desc="Get email address policies"><div class="li-text"><span class="d">Get email address policies <span class="mod-badge mod-onprem" style="margin-left:6px;" onclick="event.stopPropagation()">EMS<div class="mod-tip"><div class="mod-tip-title">Exchange Management Shell Only</div><div class="mod-tip-note">Requires on-prem Exchange Management Shell (EMS).<br>Not available via Connect-ExchangeOnline.<br>EXO equivalent: Get-Mailbox | Select EmailAddresses</div></div></span></span><span class="c">Get-EmailAddressPolicy</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-MessageTrace -SenderAddress &lt;email&gt; -StartDate &lt;date&gt;" data-desc="Get message trace (EXO)"><div class="li-text"><span class="d">Get message trace (EXO)</span><span class="c">Get-MessageTrace -SenderAddress &lt;email&gt; -StartDate &lt;date&gt;</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-MessageTrackingLog -Sender &lt;email&gt; -Start &#x27;&lt;date&gt;&#x27;" data-desc="Get message tracking log"><div class="li-text"><span class="d">Get message tracking log <span class="mod-badge mod-onprem" style="margin-left:6px;" onclick="event.stopPropagation()">EMS<div class="mod-tip"><div class="mod-tip-title">Exchange Management Shell Only</div><div class="mod-tip-note">Requires on-prem Exchange Management Shell (EMS).<br>Not available via Connect-ExchangeOnline.<br>EXO equivalent (above): Get-MessageTrace -SenderAddress</div></div></span></span><span class="c">Get-MessageTrackingLog -Sender &lt;email&gt; -Start &#x27;&lt;date&gt;&#x27;</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-MessageTrace -Status Failed" data-desc="Get failed/rejected messages (EXO)"><div class="li-text"><span class="d">Get failed/rejected messages (EXO)</span><span class="c">Get-MessageTrace -Status Failed</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-MessageTrackingLog -EventId REJECT" data-desc="Get rejected messages"><div class="li-text"><span class="d">Get rejected messages <span class="mod-badge mod-onprem" style="margin-left:6px;" onclick="event.stopPropagation()">EMS<div class="mod-tip"><div class="mod-tip-title">Exchange Management Shell Only</div><div class="mod-tip-note">Requires on-prem Exchange Management Shell (EMS).<br>Not available via Connect-ExchangeOnline.<br>EXO equivalent (above): Get-MessageTrace -Status Failed</div></div></span></span><span class="c">Get-MessageTrackingLog -EventId REJECT</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-RemoteDomain" data-desc="Get remote domains"><div class="li-text"><span class="d">Get remote domains</span><span class="c">Get-RemoteDomain</span></div><span class="star">&#9734;</span></li>
     </ul>
   </div>
   <div class="sec t-session" id="ps12">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Distribution</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Distribution</span><span class="sec-label-right"><span class="mod-badge mod-exo" onclick="event.stopPropagation()">EXO<div class="mod-tip"><div class="mod-tip-title">Requires: ExchangeOnlineManagement</div><code class="mod-tip-cmd">Install-Module ExchangeOnlineManagement</code><div class="mod-tip-note">Connect first: Connect-ExchangeOnline -UserPrincipalName admin@domain.com<br>Works for Exchange Online and on-prem (with EMS).</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-DistributionGroup -ResultSize Unlimited" data-desc="Get all distribution groups"><div class="li-text"><span class="d">Get all distribution groups</span><span class="c">Get-DistributionGroup -ResultSize Unlimited</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-DistributionGroupMember -Identity &#x27;&lt;groupname&gt;&#x27;" data-desc="Get DG members"><div class="li-text"><span class="d">Get DG members</span><span class="c">Get-DistributionGroupMember -Identity &#x27;&lt;groupname&gt;&#x27;</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-DynamicDistributionGroup" data-desc="Get dynamic distribution groups"><div class="li-text"><span class="d">Get dynamic distribution groups</span><span class="c">Get-DynamicDistributionGroup</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-DynamicDistributionGroupMember -Identity &#x27;&lt;groupname&gt;&#x27;" data-desc="Get dynamic DG members"><div class="li-text"><span class="d">Get dynamic DG members</span><span class="c">Get-DynamicDistributionGroupMember -Identity &#x27;&lt;groupname&gt;&#x27;</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-UnifiedGroup -ResultSize Unlimited" data-desc="Get M365 unified groups"><div class="li-text"><span class="d">Get M365 unified groups</span><span class="c">Get-UnifiedGroup -ResultSize Unlimited</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-UnifiedGroupLinks -Identity &#x27;&lt;groupname&gt;&#x27; -LinkType Members" data-desc="Get unified group members"><div class="li-text"><span class="d">Get unified group members</span><span class="c">Get-UnifiedGroupLinks -Identity &#x27;&lt;groupname&gt;&#x27; -LinkType Members</span></div><span class="star">&#9734;</span></li>
     </ul>
   </div>
   <div class="sec t-ssh" id="ps13">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Policies</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Policies</span><span class="sec-label-right"><span class="mod-badge mod-exo" onclick="event.stopPropagation()">EXO<div class="mod-tip"><div class="mod-tip-title">Requires: ExchangeOnlineManagement</div><code class="mod-tip-cmd">Install-Module ExchangeOnlineManagement</code><div class="mod-tip-note">Connect first: Connect-ExchangeOnline -UserPrincipalName admin@domain.com<br>Works for Exchange Online and on-prem (with EMS).</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-OwaMailboxPolicy" data-desc="Get OWA mailbox policy"><div class="li-text"><span class="d">Get OWA mailbox policy</span><span class="c">Get-OwaMailboxPolicy</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-MobileDeviceMailboxPolicy" data-desc="Get ActiveSync policy"><div class="li-text"><span class="d">Get ActiveSync policy</span><span class="c">Get-MobileDeviceMailboxPolicy</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-RetentionPolicy" data-desc="Get retention policies"><div class="li-text"><span class="d">Get retention policies</span><span class="c">Get-RetentionPolicy</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-AdminAuditLogConfig" data-desc="Get admin audit log config"><div class="li-text"><span class="d">Get admin audit log config</span><span class="c">Get-AdminAuditLogConfig</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-Mailbox -Identity &lt;email&gt; | Select-Object AuditEnabled,AuditOwner" data-desc="Get mailbox audit config"><div class="li-text"><span class="d">Get mailbox audit config</span><span class="c">Get-Mailbox -Identity &lt;email&gt; | Select-Object AuditEnabled,AuditOwner</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-Mailbox -Identity &lt;email&gt; | Select-Object LitigationHoldEnabled,LitigationHoldDate" data-desc="Get litigation hold status"><div class="li-text"><span class="d">Get litigation hold status</span><span class="c">Get-Mailbox -Identity &lt;email&gt; | Select-Object LitigationHoldEnabled,LitigationHoldDate</span></div><span class="star">&#9734;</span></li>
@@ -666,11 +910,11 @@
     </ul>
   </div>
   <div class="sec t-arp" id="ps14">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Online Protection</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Online Protection</span><span class="sec-label-right"><span class="mod-badge mod-exo" onclick="event.stopPropagation()">EXO<div class="mod-tip"><div class="mod-tip-title">Requires: ExchangeOnlineManagement</div><code class="mod-tip-cmd">Install-Module ExchangeOnlineManagement</code><div class="mod-tip-note">Connect first: Connect-ExchangeOnline -UserPrincipalName admin@domain.com<br>Works for Exchange Online and on-prem (with EMS).</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-HostedContentFilterPolicy" data-desc="Get spam filter policy"><div class="li-text"><span class="d">Get spam filter policy</span><span class="c">Get-HostedContentFilterPolicy</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-SafeLinksPolicy" data-desc="Get safe links policy"><div class="li-text"><span class="d">Get safe links policy</span><span class="c">Get-SafeLinksPolicy</span></div><span class="star">&#9734;</span></li>
-      <li data-cmd="Get-SafeAttachmentPolicy" data-desc="Get safe attachments policy"><div class="li-text"><span class="d">Get safe attachments policy</span><span class="c">Get-SafeAttachmentPolicy</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-SafeLinksPolicy" data-desc="Get safe links policy"><div class="li-text"><span class="d">Get safe links policy <span class="mod-badge mod-defender" style="margin-left:6px;" onclick="event.stopPropagation()">DEFENDER<div class="mod-tip"><div class="mod-tip-title">Requires Defender for Office 365</div><div class="mod-tip-note">Requires Microsoft Defender for Office 365<br>Plan 1 or Plan 2 licence — not included in base EXO.</div></div></span></span><span class="c">Get-SafeLinksPolicy</span></div><span class="star">&#9734;</span></li>
+      <li data-cmd="Get-SafeAttachmentPolicy" data-desc="Get safe attachments policy"><div class="li-text"><span class="d">Get safe attachments policy <span class="mod-badge mod-defender" style="margin-left:6px;" onclick="event.stopPropagation()">DEFENDER<div class="mod-tip"><div class="mod-tip-title">Requires Defender for Office 365</div><div class="mod-tip-note">Requires Microsoft Defender for Office 365<br>Plan 1 or Plan 2 licence — not included in base EXO.</div></div></span></span><span class="c">Get-SafeAttachmentPolicy</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-DkimSigningConfig" data-desc="Get DKIM config"><div class="li-text"><span class="d">Get DKIM config</span><span class="c">Get-DkimSigningConfig</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-QuarantineMessage" data-desc="Get quarantine messages"><div class="li-text"><span class="d">Get quarantine messages</span><span class="c">Get-QuarantineMessage</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-AntiPhishPolicy" data-desc="Get anti-phish policy"><div class="li-text"><span class="d">Get anti-phish policy</span><span class="c">Get-AntiPhishPolicy</span></div><span class="star">&#9734;</span></li>
@@ -678,7 +922,7 @@
     </ul>
   </div>
   <div class="sec t-routing" id="ps15">
-    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Reports</span><span class="sec-toggle">&#9662;</span></div>
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Exchange Reports</span><span class="sec-label-right"><span class="mod-badge mod-exo" onclick="event.stopPropagation()">EXO<div class="mod-tip"><div class="mod-tip-title">Requires: ExchangeOnlineManagement</div><code class="mod-tip-cmd">Install-Module ExchangeOnlineManagement</code><div class="mod-tip-note">Connect first: Connect-ExchangeOnline -UserPrincipalName admin@domain.com<br>Works for Exchange Online and on-prem (with EMS).</div></div></span><span class="sec-toggle">&#9662;</span></span></div>
     <ul class="cmds">
       <li data-cmd="Get-Mailbox -InactiveMailboxOnly" data-desc="Get inactive mailboxes"><div class="li-text"><span class="d">Get inactive mailboxes</span><span class="c">Get-Mailbox -InactiveMailboxOnly</span></div><span class="star">&#9734;</span></li>
       <li data-cmd="Get-MobileDeviceStatistics -Mailbox &lt;email&gt;" data-desc="Get mobile device stats"><div class="li-text"><span class="d">Get mobile device stats</span><span class="c">Get-MobileDeviceStatistics -Mailbox &lt;email&gt;</span></div><span class="star">&#9734;</span></li>
@@ -690,8 +934,7 @@
   </div>
 </div>
 </div></div>
-
-<div id="recent-tray">
+</div>
   <div class="recent-header">
     <span>⏱ Recently Copied</span>
     <button class="recent-clear" id="recent-clear-btn">Clear</button>
@@ -701,7 +944,7 @@
 
 
 
-<footer>PowerShell Cmdlet Reference &nbsp;·&nbsp; AD · Azure AD · MS Graph · Exchange</footer>
+<footer>PowerShell Cmdlet Reference &nbsp;·&nbsp; AD · MS Graph · Exchange</footer>
 <div id="toast"></div>
 
 <!-- ══ COMMAND BUILDER ══ -->
@@ -1140,6 +1383,71 @@
     });
     document.getElementById('search-count').textContent = count + ' command' + (count !== 1 ? 's' : '') + ' matched';
   });
+
+  // ══════════════════════════════════════
+  // EXAMPLE HINT BUTTONS
+  // ══════════════════════════════════════
+  const EXAMPLE_MAP = {
+    'username':     { label: 'Username',    val: 'firstname.lastname' },
+    'UPN':          { label: 'UPN',         val: 'firstname.lastname@contoso.com' },
+    'email':        { label: 'Email',       val: 'firstname.lastname@contoso.com' },
+    'Mailbox':      { label: 'Mailbox',     val: 'firstname.lastname@contoso.com' },
+    'ObjectId':     { label: 'ObjectId',    val: 'firstname.lastname@contoso.com' },
+    'groupname':    { label: 'Group name',  val: 'IT-Admins' },
+    'GroupId':      { label: 'Group ID',    val: 'a1b2c3d4-5678-90ab-cdef-000000000001' },
+    'RoleId':       { label: 'Role ID',     val: 'a1b2c3d4-5678-90ab-cdef-000000000002' },
+    'computername': { label: 'Computer',    val: 'DESKTOP-WIN11-001' },
+    'OU_path':      { label: 'OU path',     val: 'OU=Users,DC=contoso,DC=com' },
+    'ou':           { label: 'OU',          val: 'IT-Users' },
+    'domain':       { label: 'Domain',      val: 'contoso' },
+    'name':         { label: 'Name',        val: 'John*' },
+    'scope':        { label: 'Scope',       val: 'Global' },
+    'date':         { label: 'Date',        val: '2024-01-01' },
+  };
+
+  document.querySelectorAll('.cmds li').forEach(li => {
+    const cmd = li.dataset.cmd || '';
+    const placeholders = [...new Set(cmd.match(/<[^>]+>/g) || [])];
+    if (placeholders.length === 0) return; // no params — no hint btn
+
+    // Build tooltip rows
+    const rows = placeholders.map(ph => {
+      const key = ph.replace(/[<>]/g, '');
+      const ex  = EXAMPLE_MAP[key];
+      if (!ex) return null;
+      return `<div class="hint-row">
+        <span class="hint-param">${ex.label}</span>
+        <span class="hint-arrow">→</span>
+        <span class="hint-val">${ex.val}</span>
+      </div>`;
+    }).filter(Boolean);
+
+    if (rows.length === 0) return; // all placeholders unknown — skip
+
+    const btn = document.createElement('span');
+    btn.className = 'hint-btn';
+    btn.innerHTML = `?<div class="hint-tip"><div class="hint-tip-title">Example values</div>${rows.join('')}</div>`;
+
+    // Stop propagation so hovering doesn't trigger copy/builder
+    btn.addEventListener('click', e => e.stopPropagation());
+
+    // Insert between .li-text and .star
+    const star = li.querySelector('.star');
+    li.insertBefore(btn, star);
+  });
+  // ══════════════════════════════════════
+  // BEFORE YOU START BANNER
+  // ══════════════════════════════════════
+  function togglePrereq() {
+    document.getElementById('prereq').classList.toggle('collapsed');
+  }
+
+  function copyPrereq(el) {
+    const cmd = el.textContent.trim();
+    navigator.clipboard.writeText(cmd).then(() => {
+      showToast('Copied: ' + cmd.substring(0, 48) + (cmd.length > 48 ? '…' : ''));
+    });
+  }
 </script>
 <footer class="site-footer">
   <div class="footer-inner">
