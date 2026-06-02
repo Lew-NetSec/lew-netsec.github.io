@@ -3329,6 +3329,7 @@ function showHome() {
   function buildBtns() {
     const wrap=document.getElementById('snr-btns');
     if (!wrap) return;
+    wrap.innerHTML = '';
     PREFIXES.forEach(p=>{
       const btn=document.createElement('button');
       btn.className='snr-pfx-btn'+(p===selP?' active':'');
@@ -3363,15 +3364,29 @@ function showHome() {
     });
   }
 
+  let rulerInitialised = false;
+
   function init() {
     if (!document.getElementById('snr-ruler')) return;
-    buildBtns(); render(); attachEvents();
+    if (!rulerInitialised) {
+      buildBtns();
+      rulerInitialised = false; // reset so re-init on next showCard('subnet')
+    }
+    render();
+    attachEvents();
+    rulerInitialised = true;
   }
-  window.initRuler = init;
+  window.initRuler = function() {
+    rulerInitialised = false; // force full rebuild when called from showCard
+    init();
+  };
 
-  document.addEventListener('toggle',function(e){
-    if (e.target&&e.target.open) setTimeout(init, 50);
-  },true);
+  document.addEventListener('toggle', function(e) {
+    // Only init ruler from toggle if it hasn't been initialised yet
+    if (e.target && e.target.open && document.getElementById('snr-ruler') && !rulerInitialised) {
+      init();
+    }
+  }, true);
 })();
 
 
