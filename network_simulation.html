@@ -1252,6 +1252,7 @@ let coverageBand = '5';
 let attackSpeed  = 1;
 let simSpeed     = 1;    // 1 = normal, 2 = fast, 3 = ultra
 let vpnMode      = 'full';
+let selectedBand = '5';
 let packetRate  = 0;
 let lastPacketTick = 0;
 
@@ -1862,12 +1863,13 @@ canvas.addEventListener('click', e => {
   const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
   const my = (e.clientY - rect.top)  * (canvas.height / rect.height);
   let hit = null;
-  Object.values(DEVICES).forEach(d => {
+  for (const d of Object.values(DEVICES)) {
     const dx = worldX(d.x) - mx, dy = worldY(d.y) - my;
     const isSquare = d.type === 'workstation' || d.type === 'tv';
     const isCloud  = d.type === 'isp';
-    if (isSquare ? (Math.abs(dx) < 14 && Math.abs(dy) < 14) : isCloud ? (Math.abs(dx) < 32 && Math.abs(dy) < 20) : Math.sqrt(dx*dx+dy*dy) < 20) hit = d;
-  });
+    const hitR = d.type === 'ap' ? 16 : 20;
+    if (isSquare ? (Math.abs(dx) < 14 && Math.abs(dy) < 14) : isCloud ? (Math.abs(dx) < 32 && Math.abs(dy) < 20) : Math.sqrt(dx*dx+dy*dy) < hitR) { hit = d; break; }
+  }
   if (hit) {
     selectedDevice = hit;
     switchTab('device');
@@ -1883,12 +1885,13 @@ canvas.addEventListener('mousemove', e => {
   const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
   const my = (e.clientY - rect.top)  * (canvas.height / rect.height);
   let hit = false;
-  Object.values(DEVICES).forEach(d => {
+  for (const d of Object.values(DEVICES)) {
     const dx = worldX(d.x) - mx, dy = worldY(d.y) - my;
     const isSquare = d.type === 'workstation' || d.type === 'tv';
     const isCloud  = d.type === 'isp';
-    if (isSquare ? (Math.abs(dx) < 14 && Math.abs(dy) < 14) : isCloud ? (Math.abs(dx) < 32 && Math.abs(dy) < 20) : Math.sqrt(dx*dx+dy*dy) < 20) hit = true;
-  });
+    const hitR = d.type === 'ap' ? 16 : 20;
+    if (isSquare ? (Math.abs(dx) < 14 && Math.abs(dy) < 14) : isCloud ? (Math.abs(dx) < 32 && Math.abs(dy) < 20) : Math.sqrt(dx*dx+dy*dy) < hitR) { hit = true; break; }
+  }
   canvas.style.cursor = hit ? 'pointer' : 'default';
 });
 
