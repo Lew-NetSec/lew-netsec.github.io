@@ -63,7 +63,7 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 
 /* Panel tabs */
 .panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
-.ptab{flex:1;padding:8px 4px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4a5568;cursor:pointer;text-align:center;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s;background:none;border-top:none;border-left:none;border-right:none;}
+.ptab{flex:1;padding:8px 4px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4a5568;cursor:pointer;text-align:center;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s;background:none;border-top:none;border-left:none;border-right:none;}
 .ptab:hover{color:#94a3b8;}
 .ptab.active{color:var(--accent);border-bottom-color:var(--accent);}
 
@@ -80,8 +80,8 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 /* Device panel */
 .dev-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
 .dev-name{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:3px;}
-.dev-type{font-size:10px;color:#64748b;letter-spacing:1.5px;text-transform:uppercase;}
-.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-top:5px;}
+.dev-type{font-size:11px;color:#64748b;letter-spacing:1.5px;text-transform:uppercase;}
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-top:5px;}
 .status-online{color:var(--green);background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);}
 .status-offline{color:var(--red);background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);}
 .status-degraded{color:var(--amber);background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);}
@@ -95,29 +95,29 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .defence-card{border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px;transition:border-color 0.15s;}
 .defence-card.active{border-color:rgba(45,212,191,0.5);background:rgba(45,212,191,0.04);}
 .defence-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;cursor:pointer;}
-.defence-name{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;color:#fff;}
+.defence-name{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;color:#fff;}
 .defence-toggle{width:32px;height:16px;border-radius:8px;background:var(--border);position:relative;transition:background 0.2s;flex-shrink:0;}
 .defence-toggle.on{background:rgba(45,212,191,0.6);}
 .defence-toggle::after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left 0.2s;}
 .defence-toggle.on::after{left:19px;}
-.defence-desc{font-size:10px;color:#4a5568;line-height:1.5;}
-.defence-blocks{font-size:9px;color:#2dd4bf;margin-top:3px;letter-spacing:0.5px;}
+.defence-desc{font-size:11px;color:#4a5568;line-height:1.5;}
+.defence-blocks{font-size:10px;color:#2dd4bf;margin-top:3px;letter-spacing:0.5px;}
 .explain-stage{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;}
-.explain-stage-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px;}
-.explain-stage-title{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:#e2e8f0;letter-spacing:0.5px;margin-bottom:3px;}
-.explain-stage-desc{font-size:10px;color:#4a5568;line-height:1.6;}
+.explain-stage-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.explain-stage-title{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#e2e8f0;letter-spacing:0.5px;margin-bottom:3px;}
+.explain-stage-desc{font-size:11px;color:#4a5568;line-height:1.6;}
 .explain-defence{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;}
-.explain-defence-tag{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;letter-spacing:0.5px;padding:3px 7px;border-radius:2px;background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.3);white-space:nowrap;flex-shrink:0;margin-top:1px;}
-.explain-legend-item{display:flex;align-items:center;gap:8px;font-size:10px;color:#64748b;}
+.explain-defence-tag{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.5px;padding:3px 7px;border-radius:2px;background:rgba(45,212,191,0.1);color:#2dd4bf;border:1px solid rgba(45,212,191,0.3);white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.explain-legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:#64748b;}
 .explain-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 
 .info-grid{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-bottom:14px;}
-.info-label{font-size:10px;color:#4a5568;letter-spacing:1px;text-transform:uppercase;padding:3px 0;white-space:nowrap;}
-.info-val{font-size:11px;color:#e2e8f0;padding:3px 0;word-break:break-all;}
+.info-label{font-size:11px;color:#4a5568;letter-spacing:1px;text-transform:uppercase;padding:3px 0;white-space:nowrap;}
+.info-val{font-size:12px;color:#e2e8f0;padding:3px 0;word-break:break-all;}
 .info-val.mono{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);}
 
 .dev-actions{display:flex;gap:8px;margin-bottom:14px;}
-.dev-btn{flex:1;padding:7px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all 0.15s;border:1px solid;}
+.dev-btn{flex:1;padding:7px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all 0.15s;border:1px solid;}
 .dev-btn-connect{color:var(--green);border-color:rgba(52,211,153,0.4);background:rgba(52,211,153,0.08);}
 .dev-btn-connect:hover{background:rgba(52,211,153,0.15);border-color:var(--green);}
 .dev-btn-disconnect{color:var(--red);border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.08);}
@@ -125,22 +125,22 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .dev-btn-ping{color:var(--accent);border-color:rgba(56,189,248,0.4);background:rgba(56,189,248,0.08);}
 .dev-btn-ping:hover{background:rgba(56,189,248,0.15);border-color:var(--accent);}
 
-.ping-result{font-size:11px;color:#94a3b8;padding:6px 8px;background:var(--bg);border-radius:3px;border:1px solid var(--border);margin-bottom:10px;min-height:24px;font-family:'JetBrains Mono',monospace;}
+.ping-result{font-size:12px;color:#94a3b8;padding:6px 8px;background:var(--bg);border-radius:3px;border:1px solid var(--border);margin-bottom:10px;min-height:24px;font-family:'JetBrains Mono',monospace;}
 .ping-ok{color:var(--green);}
 .ping-fail{color:var(--red);}
 
-.section-title{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4a5568;margin-bottom:8px;margin-top:4px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4a5568;margin-bottom:8px;margin-top:4px;}
 
 /* AP heatmap */
 .heatmap-wrap{border-radius:6px;overflow:hidden;border:1px solid var(--border);margin-bottom:10px;}
 .heatmap-tabs{display:flex;border-bottom:1px solid var(--border);}
-.htab{flex:1;padding:5px;font-size:9px;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4a5568;cursor:pointer;text-align:center;background:none;border:none;transition:color 0.15s;}
+.htab{flex:1;padding:5px;font-size:10px;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4a5568;cursor:pointer;text-align:center;background:none;border:none;transition:color 0.15s;}
 .htab.active{color:var(--accent);}
 #heatmap-canvas{display:block;width:100%;height:140px;}
 
 /* DHCP table */
-.dhcp-table{width:100%;border-collapse:collapse;font-size:10px;}
-.dhcp-table th{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4a5568;padding:5px 6px;border-bottom:1px solid var(--border);text-align:left;}
+.dhcp-table{width:100%;border-collapse:collapse;font-size:11px;}
+.dhcp-table th{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4a5568;padding:5px 6px;border-bottom:1px solid var(--border);text-align:left;}
 .dhcp-table td{padding:4px 6px;border-bottom:1px solid rgba(28,42,58,0.5);color:#94a3b8;vertical-align:middle;}
 .dhcp-table tr:last-child td{border-bottom:none;}
 .dhcp-table tr:hover td{background:rgba(255,255,255,0.02);}
@@ -151,9 +151,9 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .lease-fill{height:100%;background:var(--vlan20);border-radius:2px;transition:width 1s;}
 
 /* Routing table */
-.route-table{width:100%;border-collapse:collapse;font-size:10px;}
-.route-table th{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4a5568;padding:5px 6px;border-bottom:1px solid var(--border);text-align:left;}
-.route-table td{padding:4px 6px;border-bottom:1px solid rgba(28,42,58,0.5);color:#94a3b8;font-family:'JetBrains Mono',monospace;font-size:10px;}
+.route-table{width:100%;border-collapse:collapse;font-size:11px;}
+.route-table th{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#4a5568;padding:5px 6px;border-bottom:1px solid var(--border);text-align:left;}
+.route-table td{padding:4px 6px;border-bottom:1px solid rgba(28,42,58,0.5);color:#94a3b8;font-family:'JetBrains Mono',monospace;font-size:11px;}
 .route-table tr:last-child td{border-bottom:none;}
 .route-ok{color:var(--green);}
 .route-fail{color:var(--red);}
@@ -161,7 +161,7 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 
 /* Traffic log */
 .traffic-log{display:flex;flex-direction:column;gap:3px;}
-.log-entry{display:flex;align-items:flex-start;gap:7px;padding:5px 7px;background:rgba(0,0,0,0.2);border-radius:3px;border-left:2px solid var(--border);font-size:10px;animation:logIn 0.3s ease;}
+.log-entry{display:flex;align-items:flex-start;gap:7px;padding:5px 7px;background:rgba(0,0,0,0.2);border-radius:3px;border-left:2px solid var(--border);font-size:11px;animation:logIn 0.3s ease;}
 @keyframes logIn{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:translateX(0);}}
 .log-time{color:#4a5568;white-space:nowrap;flex-shrink:0;}
 .log-msg{color:#94a3b8;flex:1;}
@@ -176,20 +176,20 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .scenario-card:hover{border-color:var(--amber);background:rgba(245,158,11,0.04);}
 .scenario-card.active{border-color:var(--red);background:rgba(248,113,113,0.06);}
 .sc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
-.sc-name{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;color:#fff;}
-.sc-badge{font-size:8px;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:2px;text-transform:uppercase;}
+.sc-name{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;color:#fff;}
+.sc-badge{font-size:9px;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:2px;text-transform:uppercase;}
 .sc-inactive{color:#4a5568;background:rgba(74,85,104,0.2);border:1px solid rgba(74,85,104,0.3);}
 .sc-active{color:var(--red);background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);}
-.sc-desc{font-size:10px;color:#4a5568;line-height:1.5;}
+.sc-desc{font-size:11px;color:#4a5568;line-height:1.5;}
 
 /* Pool gauge */
 .pool-gauge{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:8px 0 4px;}
 .pool-fill{height:100%;border-radius:3px;transition:width 0.5s,background 0.5s;}
-.pool-label{display:flex;justify-content:space-between;font-size:10px;color:#64748b;}
+.pool-label{display:flex;justify-content:space-between;font-size:11px;color:#64748b;}
 
 /* VLAN Legend (panel) */
 .vlan-legend{padding:10px 12px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface);}
-.vlan-legend .legend-row{display:flex;align-items:center;gap:8px;font-size:10px;color:#64748b;margin-bottom:4px;}
+.vlan-legend .legend-row{display:flex;align-items:center;gap:8px;font-size:11px;color:#64748b;margin-bottom:4px;}
 .vlan-legend .legend-row:last-child{margin-bottom:0;}
 .vlan-legend .leg-line{width:24px;height:2px;flex-shrink:0;}
 
@@ -214,7 +214,7 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 /* Placeholder */
 .placeholder-msg{text-align:center;padding:40px 20px;color:#4a5568;}
 .placeholder-msg .icon{font-size:32px;margin-bottom:10px;}
-.placeholder-msg p{font-size:11px;line-height:1.6;}
+.placeholder-msg p{font-size:12px;line-height:1.6;}
 
 /* Scrollbar for whole panel */
 /* Scrollbar handled globally above */
@@ -410,9 +410,9 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
     <div class="panel-content" id="tab-dhcp" style="display:none">
       <!-- Exhaustion alert banner — hidden by default -->
       <div id="dhcp-alert" style="display:none;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.4);border-radius:4px;padding:8px 10px;margin-bottom:10px;">
-        <div style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:#f87171;letter-spacing:1px;margin-bottom:4px;">⚠ POOL EXHAUSTED</div>
-        <div style="font-size:10px;color:#94a3b8;line-height:1.5;margin-bottom:8px;">Rogue devices are consuming all available leases. New clients receive APIPA (169.254.x.x) and cannot reach the network.</div>
-        <button onclick="clearRogueLeases()" style="font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:3px;border:1px solid rgba(52,211,153,0.4);background:rgba(52,211,153,0.08);color:#34d399;cursor:pointer;width:100%;">✓ CLEAR ROGUE LEASES</button>
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#f87171;letter-spacing:1px;margin-bottom:4px;">⚠ POOL EXHAUSTED</div>
+        <div style="font-size:12px;color:#94a3b8;line-height:1.5;margin-bottom:8px;">Rogue devices are consuming all available leases. New clients receive APIPA (169.254.x.x) and cannot reach the network.</div>
+        <button onclick="clearRogueLeases()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:3px;border:1px solid rgba(52,211,153,0.4);background:rgba(52,211,153,0.08);color:#34d399;cursor:pointer;width:100%;">✓ CLEAR ROGUE LEASES</button>
       </div>
 
       <div class="section-title">DHCP Pool — VLAN20 (Site 1)</div>
@@ -425,7 +425,7 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
       </table>
       <br>
       <div class="section-title">DHCP Pool — VLAN20 (Site 2)</div>
-      <div style="font-size:10px;color:#4a5568;margin-bottom:6px;">10.1.20.0/24 — assigned by Site 2 router</div>
+      <div style="font-size:11px;color:#4a5568;margin-bottom:6px;">10.1.20.0/24 — assigned by Site 2 router</div>
       <table class="dhcp-table">
         <thead><tr><th>IP Address</th><th>Hostname</th><th>MAC</th><th>State</th></tr></thead>
         <tbody id="s2-dhcp-tbody"></tbody>
@@ -462,7 +462,7 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
     <!-- DEFENCE TAB -->
     <div class="panel-content" id="tab-defence" style="display:none">
       <div class="section-title">Security Controls</div>
-      <div style="font-size:10px;color:#4a5568;line-height:1.6;margin-bottom:12px;">Enable controls before running the attack simulation to see how each defence blocks or limits the kill chain. Controls are applied realistically — blocking an early stage prevents all subsequent stages.</div>
+      <div style="font-size:11px;color:#4a5568;line-height:1.6;margin-bottom:12px;">Enable controls before running the attack simulation to see how each defence blocks or limits the kill chain. Controls are applied realistically — blocking an early stage prevents all subsequent stages.</div>
       <div id="defence-grid"></div>
     </div>
 
@@ -474,8 +474,8 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
       <div id="vpn-state-banner" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:4px;margin-bottom:12px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.3);">
         <div id="vpn-state-dot" style="width:8px;height:8px;border-radius:50%;background:#34d399;flex-shrink:0;"></div>
         <div>
-          <div id="vpn-state-label" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:#34d399;letter-spacing:1px;">ESTABLISHED</div>
-          <div id="vpn-state-sub" style="font-size:9px;color:#4a5568;margin-top:1px;">IKEv2 Phase 2 — tunnel active</div>
+          <div id="vpn-state-label" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#34d399;letter-spacing:1px;">ESTABLISHED</div>
+          <div id="vpn-state-sub" style="font-size:11px;color:#4a5568;margin-top:1px;">IKEv2 Phase 2 — tunnel active</div>
         </div>
       </div>
 
@@ -503,7 +503,7 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 
       <!-- Routed subnets -->
       <div class="section-title" style="margin-bottom:6px;">Routed via Tunnel</div>
-      <div id="vpn-routes" style="font-size:10px;color:#64748b;line-height:1.8;font-family:monospace;"></div>
+      <div id="vpn-routes" style="font-size:11px;color:#64748b;line-height:1.8;font-family:monospace;"></div>
     </div>
 
     <!-- VLAN LEGEND -->
@@ -1954,7 +1954,7 @@ function renderDevicePanel(d) {
 
     <div class="info-grid">
       <div class="info-label">IP Address</div><div class="info-val mono">${d.ip || (status==='offline'?'—':'Requesting…')}</div>
-      <div class="info-label">MAC</div><div class="info-val mono" style="font-size:10px">${d.mac}</div>
+      <div class="info-label">MAC</div><div class="info-val mono" style="font-size:11px">${d.mac}</div>
       ${d.hostname?`<div class="info-label">Hostname</div><div class="info-val">${d.hostname}</div>`:''}
       ${d.ssid?`<div class="info-label">SSID</div><div class="info-val">${d.ssid}</div>`:''}
     </div>
@@ -2164,7 +2164,7 @@ function renderDHCP() {
     tr.innerHTML = `
       <td class="lease-ip" style="${isGhost?'color:#f87171':''}">${l.ip}</td>
       <td style="color:${isGhost?'#f87171':'#94a3b8'}">${l.hostname}${isGhost?' ⚠':''}</td>
-      <td style="color:#4a5568;font-size:9px">${l.mac.substring(0,11)}…</td>
+      <td style="color:#4a5568;font-size:11px">${l.mac.substring(0,11)}…</td>
       <td><div class="lease-bar"><div class="lease-fill" style="width:${isGhost?100:leaseRatio*100}%;background:${isGhost?'var(--red)':''}"></div></div></td>
       <td><span class="${isGhost?'lease-expired':l.static?'lease-active':leaseRatio>0.1?'lease-active':'lease-expired'}">${isGhost?'ROGUE':l.static?'STATIC':leaseRatio>0.1?'ACTIVE':'EXPIRING'}</span></td>`;
     tbody.appendChild(tr);
@@ -2174,7 +2174,7 @@ function renderDHCP() {
   const apipaDevices = Object.values(DEVICES).filter(d => d._apipa);
   if (apipaDevices.length > 0) {
     const note = document.createElement('div');
-    note.style.cssText = 'margin-top:8px;padding:6px 8px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:3px;font-size:10px;color:#f59e0b;';
+    note.style.cssText = 'margin-top:8px;padding:6px 8px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:3px;font-size:11px;color:#f59e0b;';
     note.innerHTML = `⚠ ${apipaDevices.length} device(s) using APIPA — no network access:<br>${apipaDevices.map(d=>`<span style="color:#94a3b8">${d.label}: ${d.ip}</span>`).join('<br>')}`;
     tbody.parentElement.after(note);
   }
@@ -2193,7 +2193,7 @@ function renderDHCP() {
     tr.innerHTML = `
       <td class="lease-ip" style="color:#a78bfa">${d.ip}</td>
       <td style="color:#94a3b8">${d.hostname}</td>
-      <td style="color:#4a5568;font-size:9px">${d.mac.substring(0,11)}…</td>
+      <td style="color:#4a5568;font-size:11px">${d.mac.substring(0,11)}…</td>
       <td><span class="${status==='online'?'lease-active':'lease-expired'}">${status.toUpperCase()}</span></td>`;
     s2tbody.appendChild(tr);
   });
@@ -2544,14 +2544,14 @@ function renderVPN() {
     if (vpnMode === 'full') {
       routesEl.innerHTML = `
         <div style="color:#f87171">0.0.0.0/0 → All traffic via HQ</div>
-        <div style="color:#4a5568;font-size:9px;margin-top:4px;">All Site 2 internet traffic routes through Site 1 firewall. If Site 1 is compromised, Site 2 is fully exposed.</div>`;
+        <div style="color:#4a5568;font-size:11px;margin-top:4px;">All Site 2 internet traffic routes through Site 1 firewall. If Site 1 is compromised, Site 2 is fully exposed.</div>`;
     } else {
       routesEl.innerHTML = `
         <div style="color:#2dd4bf">10.0.0.0/8 → Corporate routes only</div>
         <div style="color:#38bdf8">10.0.10.0/24 → Servers (VLAN10)</div>
         <div style="color:#34d399">10.0.20.0/24 → Corporate wired (VLAN20)</div>
         <div style="color:#a78bfa">10.0.30.0/24 → Corporate WiFi (VLAN30)</div>
-        <div style="color:#4a5568;font-size:9px;margin-top:4px;">Internet traffic goes direct from Site 2. Reduces exposure if Site 1 is compromised.</div>`;
+        <div style="color:#4a5568;font-size:11px;margin-top:4px;">Internet traffic goes direct from Site 2. Reduces exposure if Site 1 is compromised.</div>`;
     }
   }
 }
