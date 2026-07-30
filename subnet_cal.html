@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subnet Calculator | LNS Network &amp; Security</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080d1a;
+    --panel:#0e1526;
+    --panel-alt:#111a30;
+    --border:#1e2b45;
+    --border-strong:#2a3c5e;
+    --cyan:#38bdf8;
+    --cyan-dim:#38bdf822;
+    --cyan-text:#7dd3fc;
+    --text:#dbe4f3;
+    --text-dim:#8fa0bd;
+    --text-mute:#5c6c8a;
+    --danger:#f87171;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Rajdhani',sans-serif;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+  a.back{
+    color:var(--text-dim);
+    text-decoration:none;
+    font-size:14px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:20px;
+  }
+  a.back:hover{color:var(--cyan-text);}
+  h1{
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    font-size:26px;
+    letter-spacing:0.5px;
+    color:var(--cyan);
+    margin:0 0 4px;
+  }
+  .subtitle{color:var(--text-dim);font-size:15px;margin:0 0 28px;}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:20px 22px;
+    margin-bottom:20px;
+  }
+  .card h2{
+    font-family:'Orbitron',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+    color:var(--cyan-text);
+    margin:0 0 16px;
+  }
+  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+
+  /* help tooltip */
+  .help-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:18px;height:18px;
+    border-radius:50%;
+    border:1px solid var(--border-strong);
+    background:transparent;
+    color:var(--text-dim);
+    font-size:11px;
+    font-family:'Rajdhani',sans-serif;
+    font-weight:600;
+    cursor:pointer;
+    line-height:1;
+    padding:0;
+    margin-left:6px;
+    transition:border-color .15s,color .15s;
+  }
+  .help-btn:hover, .help-btn.active{border-color:var(--cyan);color:var(--cyan);}
+  .help-box{
+    display:none;
+    background:var(--panel-alt);
+    border:1px solid var(--border-strong);
+    border-left:3px solid var(--cyan);
+    border-radius:6px;
+    padding:10px 14px;
+    font-size:13.5px;
+    color:var(--text-dim);
+    line-height:1.55;
+    margin:8px 0 4px;
+  }
+  .help-box.open{display:block;}
+
+  label{font-size:13px;color:var(--text-dim);display:flex;align-items:center;margin-bottom:6px;}
+  input[type=text], input[type=number]{
+    width:100%;
+    background:var(--panel-alt);
+    border:1px solid var(--border-strong);
+    color:var(--text);
+    border-radius:6px;
+    padding:9px 12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+  }
+  input:focus{outline:none;border-color:var(--cyan);}
+  select{
+    width:100%;
+    background:var(--panel-alt);
+    border:1px solid var(--border-strong);
+    color:var(--text);
+    border-radius:6px;
+    padding:9px 12px;
+    font-family:'Rajdhani',sans-serif;
+    font-size:14px;
+  }
+  select:focus{outline:none;border-color:var(--cyan);}
+  select.correct{border-color:#4ade80;background:#4ade8014;}
+  select.incorrect{border-color:var(--danger);background:#f8717114;}
+  .input-grid{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
+  .input-grid > div{flex:1;min-width:150px;}
+  .input-grid > div:last-child{max-width:120px;}
+
+  .err{color:var(--danger);font-size:13px;margin:10px 0 0;display:none;}
+
+  .bitgrid{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 4px;}
+  .octet{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .bitrow{display:flex;gap:2px;}
+  .bit{
+    width:22px;height:26px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;font-size:12px;
+    border-radius:3px;
+    background:var(--panel-alt);
+    color:var(--text-mute);
+    transition:background .25s,color .25s;
+  }
+  .bit.net{background:var(--cyan-dim);color:var(--cyan-text);border:1px solid var(--cyan);}
+  .oct-label{font-size:12px;color:var(--text-mute);font-family:'JetBrains Mono',monospace;}
+  .legend{display:flex;gap:18px;font-size:12px;color:var(--text-dim);margin-top:8px;flex-wrap:wrap;align-items:center;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:10px;height:10px;border-radius:2px;display:inline-block;}
+  .swatch.net{background:var(--cyan-dim);border:1px solid var(--cyan);}
+  .swatch.host{background:var(--panel-alt);border:1px solid var(--border-strong);}
+
+  .step-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .step-label{font-size:13px;color:var(--text-dim);}
+  .step-nav{display:flex;gap:6px;}
+  .nav-btn{
+    background:var(--panel-alt);
+    border:1px solid var(--border-strong);
+    color:var(--text);
+    border-radius:6px;
+    width:32px;height:30px;
+    cursor:pointer;
+    font-size:15px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+  .caption{
+    background:var(--panel-alt);
+    border-radius:6px;
+    padding:12px 14px;
+    font-size:13.5px;
+    font-family:'JetBrains Mono',monospace;
+    min-height:20px;
+    color:var(--text);
+    line-height:1.5;
+  }
+  .dots{display:flex;gap:5px;margin-top:12px;}
+  .dot{height:4px;flex:1;border-radius:2px;background:var(--border-strong);cursor:pointer;transition:background .2s;}
+  .dot.active{background:var(--cyan);}
+  .magicrow{display:none;gap:8px;flex-wrap:wrap;margin:16px 0 4px;}
+  .chip{
+    padding:6px 10px;border-radius:6px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    background:var(--panel-alt);color:var(--text-mute);
+    border:1px solid var(--border-strong);
+  }
+  .chip.hit{background:#4ade8014;color:#86efac;border-color:#4ade80;}
+
+  .octet.emphasis{outline:2px solid #4ade80;outline-offset:5px;border-radius:6px;}
+  .octet.emphasis .oct-label{color:#4ade80;font-weight:600;}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0 14px;}
+  .stat{
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+  }
+  .stat .l{font-size:12.5px;color:var(--text-dim);margin-bottom:4px;display:flex;align-items:center;}
+  .stat .v{font-size:17px;font-weight:500;font-family:'JetBrains Mono',monospace;color:var(--text);}
+  .range-box{
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:13.5px;
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:14px;
+    flex-wrap:wrap;gap:8px;
+  }
+  .range-box .v{font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--cyan-text);}
+  .magic-panel{
+    background:var(--panel-alt);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:13.5px;
+  }
+  .magic-panel .r{display:flex;justify-content:space-between;margin-bottom:6px;}
+  .magic-panel .r:last-child{margin-bottom:0;}
+  .magic-panel .v{font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--cyan-text);}
+  .divider{border:none;border-top:1px solid var(--border);margin:22px 0;}
+
+  .stat{position:relative;}
+  .copy-btn{
+    position:absolute;top:8px;right:8px;
+    background:transparent;border:1px solid var(--border-strong);
+    color:var(--text-mute);border-radius:5px;
+    width:22px;height:22px;font-size:11px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .15s,color .15s;
+  }
+  .copy-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+  .copy-btn.copied{border-color:var(--cyan);color:var(--cyan-text);}
+
+  .toolbar{display:flex;justify-content:flex-end;margin-bottom:12px;}
+  .toggle-btn{
+    background:var(--panel-alt);border:1px solid var(--border-strong);
+    color:var(--text-dim);border-radius:6px;padding:7px 14px;
+    font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;
+    cursor:pointer;
+  }
+  .toggle-btn:hover{border-color:var(--cyan);color:var(--cyan-text);}
+  .toggle-btn.active{background:var(--cyan-dim);border-color:var(--cyan);color:var(--cyan-text);}
+
+  .quiz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px;}
+  .quiz-field label{margin-bottom:5px;}
+  .quiz-field input{font-size:13.5px;}
+  .quiz-field input.correct{border-color:#4ade80;background:#4ade8014;}
+  .quiz-field input.incorrect{border-color:var(--danger);background:#f8717114;}
+  .quiz-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .btn{
+    background:var(--cyan-dim);border:1px solid var(--cyan);color:var(--cyan-text);
+    border-radius:6px;padding:9px 18px;font-family:'Rajdhani',sans-serif;
+    font-size:14px;font-weight:600;cursor:pointer;
+  }
+  .btn:hover{background:#38bdf83a;}
+  .btn.secondary{background:transparent;border-color:var(--border-strong);color:var(--text-dim);}
+  .btn.secondary:hover{border-color:var(--cyan);color:var(--cyan-text);}
+  .quiz-feedback{margin-top:12px;font-size:13.5px;padding:10px 14px;border-radius:6px;display:none;}
+  .quiz-feedback.show{display:block;}
+  .quiz-feedback.pass{background:#4ade8014;border:1px solid #4ade8055;color:#86efac;}
+  .quiz-feedback.fail{background:#f8717114;border:1px solid #f8717155;color:#fca5a5;}
+
+  .quiz-start{
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    padding:36px 20px;text-align:center;
+  }
+  .quiz-start p{color:var(--text-dim);font-size:13.5px;margin:0;max-width:380px;}
+
+  .quiz-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid var(--border);}
+  .quiz-tab{
+    background:transparent;border:none;border-bottom:2px solid transparent;
+    color:var(--text-mute);padding:9px 4px;margin-right:14px;
+    font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;
+    cursor:pointer;letter-spacing:0.3px;
+  }
+  .quiz-tab:hover{color:var(--text-dim);}
+  .quiz-tab.active{color:var(--cyan-text);border-bottom-color:var(--cyan);}
+
+  .history-header{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px;}
+  .history-header h3{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.6px;text-transform:uppercase;color:var(--text-dim);margin:0;}
+  .btn.small{padding:6px 12px;font-size:12.5px;}
+  .quiz-history{display:flex;flex-direction:column;gap:10px;max-height:420px;overflow-y:auto;padding-right:4px;}
+  .quiz-history-empty{color:var(--text-mute);font-size:13px;padding:10px 2px;}
+  .history-item{
+    background:var(--panel-alt);border:1px solid var(--border);border-radius:8px;
+    padding:12px 14px;
+  }
+  .history-item.pass{border-left:3px solid #4ade80;}
+  .history-item.fail{border-left:3px solid var(--danger);}
+  .history-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .history-top .prob{font-family:'JetBrains Mono',monospace;font-size:13.5px;color:var(--text);}
+  .history-top .time{font-size:11.5px;color:var(--text-mute);}
+  .history-badge{
+    font-size:11px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;
+    padding:3px 9px;border-radius:20px;
+  }
+  .history-badge.pass{background:#4ade8022;color:#86efac;}
+  .history-badge.fail{background:#f8717122;color:#fca5a5;}
+  .history-fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 14px;}
+  .field-result{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;}
+  .field-icon{
+    flex-shrink:0;width:16px;height:16px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:700;margin-top:1px;
+  }
+  .field-icon.ok{background:#4ade8022;color:#4ade80;}
+  .field-icon.bad{background:#f8717122;color:var(--danger);}
+  .field-text .fl{color:var(--text-dim);}
+  .field-text .why{color:var(--text-mute);font-family:'JetBrains Mono',monospace;display:block;margin-top:1px;}
+
+  .quiz-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .quiz-chip{
+    background:var(--panel-alt);border:1px solid var(--border);
+    border-radius:8px;padding:8px 14px;min-width:90px;
+    display:flex;flex-direction:column;gap:2px;flex:1;
+  }
+  .quiz-chip .l{font-size:11.5px;color:var(--text-dim);}
+  .quiz-chip .v{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;color:var(--cyan-text);}
+  .quiz-chip.warn .v{color:var(--danger);}
+
+  .vlsm-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;}
+  .vlsm-row .name{flex:2;min-width:120px;}
+  .vlsm-row .hosts{flex:1;min-width:90px;}
+  .vlsm-row .rm{
+    background:transparent;border:1px solid var(--border-strong);color:var(--text-mute);
+    border-radius:6px;width:34px;height:34px;cursor:pointer;font-size:15px;
+  }
+  .vlsm-row .rm:hover{border-color:var(--danger);color:var(--danger);}
+  table.vlsm-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px;}
+  table.vlsm-table th,table.vlsm-table td{
+    text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono',monospace;white-space:nowrap;
+  }
+  table.vlsm-table th{color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:0.4px;}
+  table.vlsm-table td{color:var(--text);}
+  table.vlsm-table tbody tr:hover{background:var(--panel-alt);}
+  .vlsm-error{color:var(--danger);font-size:13px;margin-top:10px;display:none;}
+  .vlsm-error.show{display:block;}
+
+  .ipv6-groups{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 4px;}
+  .ipv6-group{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .nibrow{display:flex;gap:2px;}
+  .nib{
+    width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:3px;
+    background:var(--panel-alt);color:var(--text-mute);
+  }
+  .nib.net{background:var(--cyan-dim);color:var(--cyan-text);border:1px solid var(--cyan);}
+  .nib.partial{background:linear-gradient(90deg,var(--cyan-dim) 50%,var(--panel-alt) 50%);color:var(--text);border:1px solid var(--border-strong);}
+  .g-label{font-size:11px;color:var(--text-mute);font-family:'JetBrains Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">&larr; back to portfolio</a>
+  <h1>Subnet calculator</h1>
+  <p class="subtitle">Walk through IPv4 subnetting step by step, then work out any address live.</p>
+
+  <div class="card">
+    <h2>Walkthrough</h2>
+    <div class="step-head">
+      <div class="step-label" id="stepLabel"></div>
+      <div class="step-nav">
+        <button class="nav-btn" id="prevBtn" aria-label="Previous step">&#8249;</button>
+        <button class="nav-btn" id="nextBtn" aria-label="Next step">&#8250;</button>
+      </div>
+    </div>
+    <div class="bitgrid" id="demoBits"></div>
+    <div class="magicrow" id="magicRow"></div>
+    <div class="caption" id="demoCaption"></div>
+    <div class="dots" id="dots">
+      <div class="dot" data-i="0"></div><div class="dot" data-i="1"></div><div class="dot" data-i="2"></div>
+      <div class="dot" data-i="3"></div><div class="dot" data-i="4"></div><div class="dot" data-i="5"></div>
+      <div class="dot" data-i="6"></div><div class="dot" data-i="7"></div><div class="dot" data-i="8"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Calculator</h2>
+
+    <div class="input-grid">
+      <div>
+        <label>IP address
+          <button class="help-btn" data-help="h-ip">?</button>
+        </label>
+        <input id="ipInput" type="text" value="192.168.10.130">
+      </div>
+      <div>
+        <label>Prefix / CIDR
+          <button class="help-btn" data-help="h-cidr">?</button>
+        </label>
+        <input id="cidrInput" type="number" min="0" max="32" value="26">
+      </div>
+    </div>
+    <div class="help-box" id="h-ip">An IPv4 address is 32 bits, written as four decimal numbers 0&ndash;255 (one per byte, called an octet) separated by dots. Example: 192.168.10.130.</div>
+    <div class="help-box" id="h-cidr">The number after the slash is the prefix length &mdash; how many bits, counting from the left, are reserved for the network portion of the address. /26 means the first 26 of the 32 bits identify the network; the remaining 6 bits identify hosts within it. CIDR stands for Classless Inter-Domain Routing, the notation that replaced the old class A/B/C system.</div>
+
+    <div class="err" id="err"></div>
+
+    <div class="bitgrid" id="bits"></div>
+    <div class="legend" id="legend">
+      <span><span class="swatch net"></span>Network bits<button class="help-btn" data-help="h-netbits">?</button></span>
+      <span><span class="swatch host"></span>Host bits<button class="help-btn" data-help="h-hostbits">?</button></span>
+      <button class="help-btn" data-help="h-bits">?</button><span style="color:var(--text-mute);font-size:12px;">what do the 1s and 0s mean?</span>
+    </div>
+    <div class="help-box" id="h-netbits">These bits are fixed for every device on the subnet &mdash; they never change between hosts. Together they form the network's identity, the same on every address inside it.</div>
+    <div class="help-box" id="h-hostbits">These bits are free to vary and identify individual devices within the subnet. With <em>n</em> host bits you get 2&#8319; possible combinations &mdash; two of which (all-0 and all-1) are reserved, leaving the rest as usable host addresses.</div>
+    <div class="help-box" id="h-bits">Each octet (like 192) is really 8 binary digits. 192 in binary is 11000000 &mdash; that's 128+64, since each position represents a power of two (128, 64, 32, 16, 8, 4, 2, 1 from left to right) and a bit is 1 if that value is included in the total. A 1 means "this power of two is switched on"; a 0 means it's switched off. Whether a given bit belongs to the network or host portion depends only on its position relative to the prefix length, not on its value.</div>
+
+    <div class="legend" style="margin:14px 0 0;">
+      <span>Includes wildcard mask<button class="help-btn" data-help="h-wildcard">?</button></span>
+    </div>
+    <div class="help-box" id="h-wildcard">A wildcard mask is a subnet mask with every bit flipped (255 minus each octet of the mask). Routers use it instead of a subnet mask in OSPF network statements and standard/extended ACLs &mdash; a 0 bit still means "must match exactly," but a 1 bit now means "don't care," the opposite of how a subnet mask reads. For /26 (mask 255.255.255.192), the wildcard is 0.0.0.63.</div>
+
+    <div class="stats" id="stats"></div>
+    <div class="range-box" id="range"></div>
+
+    <hr class="divider">
+
+    <h2>Magic number method<button class="help-btn" data-help="h-magic">?</button></h2>
+    <div class="help-box" id="h-magic">A shortcut that skips binary entirely. Find the "interesting octet" &mdash; the one where the subnet mask isn't 0 or 255. Magic number = 256 minus that mask value; it's the size of each block. List multiples of the magic number in that octet and find which two the address falls between: the lower one is the network address, one below the next multiple is the broadcast address. Same result as the binary method, just faster once memorized.</div>
+    <div class="magic-panel" id="magicPanel"></div>
+  </div>
+
+  <div class="card">
+    <h2>VLSM — variable-length subnetting<button class="help-btn" data-help="h-vlsm">?</button></h2>
+    <div class="help-box" id="h-vlsm">VLSM carves one address block into multiple subnets of different sizes, so each department or link gets only as many addresses as it needs instead of one fixed size for everyone. The standard approach: sort requirements largest-first, size each subnet to the smallest block that fits, and allocate them back-to-back starting from the base network so nothing overlaps.</div>
+
+    <div class="input-grid">
+      <div>
+        <label>Base network<button class="help-btn" data-help="h-vbase">?</button></label>
+        <input type="text" id="vBase" value="192.168.1.0">
+      </div>
+      <div>
+        <label>Base prefix<button class="help-btn" data-help="h-vprefix">?</button></label>
+        <input type="number" id="vBasePrefix" min="1" max="30" value="24">
+      </div>
+    </div>
+    <div class="help-box" id="h-vbase">The one big block of addresses you're starting with, before splitting it up — for example, the address range your ISP or head office gave you.</div>
+    <div class="help-box" id="h-vprefix">How big that starting block is, in the same /CIDR notation used above. A /24 is 256 addresses total; VLSM will carve subnets for each row out of that block, largest requirement first.</div>
+
+    <div id="vlsmRows" style="margin-top:16px;"></div>
+    <button class="btn secondary" id="vAddRow" type="button">+ Add subnet</button>
+    <div class="quiz-actions">
+      <button class="btn" id="vCalc">Calculate allocation</button>
+    </div>
+    <div class="vlsm-error" id="vErr"></div>
+    <div id="vlsmResult" style="overflow-x:auto;"></div>
+    <p id="vlsmNote" style="display:none;color:var(--text-mute);font-size:12.5px;margin-top:10px;">Capacity is the number of usable host addresses in that subnet (block size minus the network and broadcast addresses) — it's always the same as or larger than what you asked for, since subnets only come in powers of two.</p>
+  </div>
+
+  <div class="card">
+    <h2>IPv6 prefix breakdown<button class="help-btn" data-help="h-v6">?</button></h2>
+    <div class="help-box" id="h-v6">IPv6 addresses are 128 bits, written as eight groups of 4 hex digits separated by colons, with a run of zero groups optionally compressed to "::". The prefix length still marks the network/interface-ID boundary, same idea as CIDR, but subnets are normally sized in fixed /64 blocks rather than counted by host demand — there's no host-exhaustion math to do.</div>
+
+    <div class="input-grid">
+      <div>
+        <label>IPv6 address<button class="help-btn" data-help="h-v6addr">?</button></label>
+        <input type="text" id="v6Input" value="2001:db8:85a3::8a2e:370:7334">
+      </div>
+      <div>
+        <label>Prefix<button class="help-btn" data-help="h-v6prefix">?</button></label>
+        <input type="number" id="v6Prefix" min="0" max="128" value="64">
+      </div>
+    </div>
+    <div class="help-box" id="h-v6addr">Eight groups of up to 4 hex digits (0&ndash;9, a&ndash;f), separated by colons. A run of one or more all-zero groups can be shortened to "::" once in the address &mdash; here it stands in for two zero groups.</div>
+    <div class="help-box" id="h-v6prefix">Works exactly like the IPv4 prefix above: it marks how many bits, from the left, are the network / routing portion. Most end-user subnets use /64 by convention, regardless of how many devices are actually on them.</div>
+    <div class="err" id="v6Err"></div>
+    <div class="ipv6-groups" id="v6Groups"></div>
+    <div class="legend">
+      <span><span class="swatch net"></span>Network / routing prefix</span>
+      <span><span class="swatch host"></span>Interface ID<button class="help-btn" data-help="h-v6iface">?</button></span>
+    </div>
+    <div class="help-box" id="h-v6iface">IPv6's name for what IPv4 calls the "host portion" &mdash; the part of the address that identifies one specific device, not the network it's on.</div>
+
+    <div class="legend" style="margin:14px 0 0;">
+      <span>Address types<button class="help-btn" data-help="h-v6types">?</button></span>
+      <span>EUI-64 / SLAAC<button class="help-btn" data-help="h-v6eui64">?</button></span>
+    </div>
+    <div class="help-box" id="h-v6types">The first few hex digits tell you what an IPv6 address is for:
+      <br>&bull; <b>fe80::/10</b> (starts with fe80) &mdash; link-local. Auto-assigned on every interface, never leaves that local network segment, never routed.
+      <br>&bull; <b>fc00::/7</b>, in practice fd00::/8 (starts with fd) &mdash; unique local (ULA). IPv6's equivalent of IPv4's private ranges (like 192.168.x.x) &mdash; not globally routable.
+      <br>&bull; <b>ff00::/8</b> (starts with ff) &mdash; multicast. Delivered to a group of interfaces at once; IPv6 has no broadcast address, multicast replaces that role.
+      <br>&bull; <b>2000::/3</b> (starts with 2 or 3) &mdash; global unicast. Publicly routable on the internet, the IPv6 equivalent of a public IPv4 address.
+    </div>
+    <div class="help-box" id="h-v6eui64">EUI-64 is how a device can build its own interface ID from its MAC address, without needing DHCP &mdash; part of SLAAC (Stateless Address Autoconfiguration). Take the 6-byte MAC address, split it in half, insert <b>fffe</b> in the middle to make 8 bytes, then flip the 7th bit of the very first byte (the "universal/local" bit, worth 0x02). Example: MAC 00:0c:29:12:34:56 &rarr; flip 0x00 to 0x02 &rarr; interface ID 020c:29ff:fe12:3456.</div>
+    <div class="stats" id="v6Stats" style="margin-top:16px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>Practice quiz</h2>
+    <p style="color:var(--text-dim);font-size:13.5px;margin:-4px 0 14px;">A random address is generated. Work out the answers yourself against the clock, then check.</p>
+
+    <div class="quiz-tabs" id="quizTabs">
+      <button class="quiz-tab active" data-tab="binary" id="tabBinary">Binary</button>
+      <button class="quiz-tab" data-tab="v4" id="tabV4">IPv4</button>
+      <button class="quiz-tab" data-tab="vlsm" id="tabVlsm">VLSM</button>
+      <button class="quiz-tab" data-tab="v6" id="tabV6">IPv6</button>
+      <button class="quiz-tab" data-tab="scenario" id="tabScenario">Scenarios</button>
+    </div>
+
+    <div class="quiz-start" id="quizStart">
+      <p id="quizStartDesc">Convert between decimal and binary octets, 60 seconds each. This is the foundation every other subnetting shortcut is built on. Every attempt is logged below so you can see exactly what you got wrong and why.</p>
+      <button class="btn" id="qStart">Start quiz</button>
+    </div>
+
+    <div id="quizBody" style="display:none;">
+      <div class="quiz-toolbar">
+        <div class="quiz-chip"><span class="l">Time left</span><span class="v" id="qTimer">60s</span></div>
+        <div class="quiz-chip"><span class="l">Score</span><span class="v" id="qScore">0 / 0</span></div>
+        <div class="quiz-chip"><span class="l">Streak</span><span class="v" id="qStreak">0</span></div>
+        <div class="quiz-chip"><span class="l">Best streak</span><span class="v" id="qBest">0</span></div>
+      </div>
+
+      <div class="range-box" style="margin-bottom:14px;">
+        <span style="color:var(--text-dim);display:flex;align-items:center;">Problem<button class="help-btn" id="qHelpBtn" style="margin-left:8px;">?</button></span>
+        <span class="v" id="quizProblem" style="font-size:16px;"></span>
+      </div>
+      <div class="help-box" id="qHelpBox"></div>
+      <div id="scenDiagram" style="margin-bottom:14px;"></div>
+      <div class="quiz-grid" id="grpBinary" style="display:none;">
+        <div class="quiz-field"><label>Answer</label><input type="text" id="qBinary" placeholder="e.g. 130 or 10000010"></div>
+      </div>
+      <div class="quiz-grid" id="grpFull">
+        <div class="quiz-field"><label>Subnet mask</label><input type="text" id="qMask" placeholder="e.g. 255.255.255.192"></div>
+        <div class="quiz-field"><label>Wildcard mask</label><input type="text" id="qWild" placeholder="e.g. 0.0.0.63"></div>
+        <div class="quiz-field"><label>Network address</label><input type="text" id="qNet" placeholder="e.g. 192.168.10.0"></div>
+        <div class="quiz-field"><label>First usable host</label><input type="text" id="qFirst" placeholder="e.g. 192.168.10.1"></div>
+        <div class="quiz-field"><label>Last usable host</label><input type="text" id="qLast" placeholder="e.g. 192.168.10.62"></div>
+        <div class="quiz-field"><label>Broadcast address</label><input type="text" id="qBcast" placeholder="e.g. 192.168.10.63"></div>
+        <div class="quiz-field"><label>Next network</label><input type="text" id="qNext" placeholder="e.g. 192.168.10.64"></div>
+        <div class="quiz-field"><label>Usable hosts</label><input type="text" id="qHosts" placeholder="e.g. 62"></div>
+      </div>
+      <div class="quiz-grid" id="grpMinHost" style="display:none;">
+        <div class="quiz-field"><label>Minimum prefix (/CIDR)</label><input type="text" id="qMinPrefix" placeholder="e.g. /26"></div>
+        <div class="quiz-field"><label>Matching subnet mask</label><input type="text" id="qMinMask" placeholder="e.g. 255.255.255.192"></div>
+      </div>
+      <div class="quiz-grid" id="grpSameSubnet" style="display:none;">
+        <div class="quiz-field">
+          <label>Same subnet?</label>
+          <select id="qSameSubnet">
+            <option value="">Select one</option>
+            <option value="yes">Yes — same subnet</option>
+            <option value="no">No — different subnets</option>
+          </select>
+        </div>
+      </div>
+      <div class="quiz-grid" id="grpSubnetsNeeded" style="display:none;">
+        <div class="quiz-field"><label>New prefix (/CIDR)</label><input type="text" id="qSubPrefix" placeholder="e.g. /27"></div>
+        <div class="quiz-field"><label>Matching subnet mask</label><input type="text" id="qSubMask" placeholder="e.g. 255.255.255.224"></div>
+        <div class="quiz-field"><label>Subnets actually created</label><input type="text" id="qSubCount" placeholder="e.g. 8"></div>
+      </div>
+      <div class="quiz-grid" id="grpVlsm" style="display:none;"></div>
+      <div class="quiz-grid" id="grpV6Net" style="display:none;">
+        <div class="quiz-field"><label>Network ID (compressed, with prefix)</label><input type="text" id="qV6Net" placeholder="e.g. 2001:db8::/32"></div>
+      </div>
+      <div class="quiz-grid" id="grpV6Count" style="display:none;">
+        <div class="quiz-field"><label>Number of subnets</label><input type="text" id="qV6Count" placeholder="e.g. 256"></div>
+      </div>
+      <div class="quiz-grid" id="grpV6Type" style="display:none;">
+        <div class="quiz-field">
+          <label>Address type</label>
+          <select id="qV6Type">
+            <option value="">Select one</option>
+            <option value="link-local">Link-local</option>
+            <option value="unique-local">Unique local (ULA)</option>
+            <option value="multicast">Multicast</option>
+            <option value="global-unicast">Global unicast</option>
+          </select>
+        </div>
+      </div>
+      <div class="quiz-grid" id="grpEui64" style="display:none;">
+        <div class="quiz-field"><label>Interface ID (EUI-64)</label><input type="text" id="qEui64" placeholder="e.g. 0212:34ff:fe56:7890"></div>
+      </div>
+      <div class="quiz-grid" id="grpScenMismatch" style="display:none;">
+        <div class="quiz-field">
+          <label>Can PC reach the router?</label>
+          <select id="qScenReach">
+            <option value="">Select one</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <div class="quiz-field">
+          <label>What's the issue (if any)?</label>
+          <select id="qScenIssue">
+            <option value="">Select one</option>
+            <option value="none">Nothing — it's configured correctly</option>
+            <option value="gateway">Wrong default gateway</option>
+            <option value="mask">Subnet mask mismatch</option>
+            <option value="ip-outside">PC's IP is on a different subnet</option>
+          </select>
+        </div>
+      </div>
+      <div class="quiz-grid" id="grpScenFit" style="display:none;">
+        <div class="quiz-field"><label>Prefix (/CIDR)</label><input type="text" id="qScenPrefix" placeholder="e.g. /27"></div>
+        <div class="quiz-field"><label>Subnet mask</label><input type="text" id="qScenMask" placeholder="e.g. 255.255.255.224"></div>
+        <div class="quiz-field"><label>Router interface IP (first usable)</label><input type="text" id="qScenIfaceIP" placeholder="e.g. 192.168.20.1"></div>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn" id="qCheck">Check answers</button>
+        <button class="btn secondary" id="qNew">New question</button>
+      </div>
+      <div class="quiz-feedback" id="qFeedback"></div>
+    </div>
+
+    <div class="history-header">
+      <h3>History</h3>
+      <button class="btn secondary small" id="qClearHistory">Clear history</button>
+    </div>
+    <div class="quiz-history" id="quizHistoryList"></div>
+  </div>
+</div>
+
+<script>
+function toOctets(ip){
+  const parts = ip.trim().split('.');
+  if(parts.length !== 4) return null;
+  const nums = parts.map(p => Number(p));
+  if(nums.some(n => !Number.isInteger(n) || n < 0 || n > 255)) return null;
+  return nums;
+}
+function toBinStr(octets){ return octets.map(o => o.toString(2).padStart(8,'0')).join(''); }
+function binToOctets(bin){
+  const out = [];
+  for(let i=0;i<32;i+=8) out.push(parseInt(bin.slice(i,i+8),2));
+  return out;
+}
+function drawBits(container, ipBin, octets, netMask){
+  container.innerHTML = '';
+  for(let o=0;o<4;o++){
+    const group = document.createElement('div');
+    group.className='octet';
+    const row = document.createElement('div');
+    row.className='bitrow';
+    for(let b=0;b<8;b++){
+      const idx = o*8+b;
+      const bitVal = ipBin[idx];
+      const isNet = netMask === null ? false : idx < netMask;
+      const cell = document.createElement('div');
+      cell.textContent = bitVal;
+      cell.className = 'bit' + (isNet ? ' net' : '');
+      row.appendChild(cell);
+    }
+    group.appendChild(row);
+    const label = document.createElement('div');
+    label.className='oct-label';
+    label.textContent = octets[o];
+    group.appendChild(label);
+    container.appendChild(group);
+  }
+}
+function maskOctets(cidr){
+  const maskBin = '1'.repeat(cidr) + '0'.repeat(32-cidr);
+  return binToOctets(maskBin);
+}
+function interestingOctetIndex(cidr){
+  const mo = maskOctets(cidr);
+  for(let i=0;i<4;i++){ if(mo[i] !== 255) return i; }
+  return 3;
+}
+function drawMagicRow(container, mults, ipOctetVal){
+  container.innerHTML = '';
+  mults.forEach((v, i) => {
+    const isBoundBelow = v <= ipOctetVal && (i === mults.length-1 || mults[i+1] > ipOctetVal);
+    const chip = document.createElement('div');
+    chip.textContent = v;
+    chip.className = 'chip' + (isBoundBelow ? ' hit' : '');
+    container.appendChild(chip);
+  });
+}
+
+/* walkthrough */
+const demoIp = [192,168,10,130];
+const demoBin = toBinStr(demoIp);
+const demoCidr = 26;
+const demoNetBin = demoBin.split('').map((b,i)=> i<demoCidr ? b : '0').join('');
+const demoBcBin = demoBin.split('').map((b,i)=> i<demoCidr ? b : '1').join('');
+const demoNetOct = binToOctets(demoNetBin);
+const demoBcOct = binToOctets(demoBcBin);
+const demoOctIdx = interestingOctetIndex(demoCidr);
+const demoMaskOct = maskOctets(demoCidr);
+const demoMagic = 256 - demoMaskOct[demoOctIdx];
+const demoMults = [];
+for(let m=0; m<=256; m+=demoMagic) demoMults.push(m);
+const demoWildOct = demoMaskOct.map(o => 255-o);
+const demoNetNum = parseInt(demoNetBin,2);
+const demoBcNum = parseInt(demoBcBin,2);
+const toIpFromNum = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+const demoFirstHost = toIpFromNum(demoNetNum+1);
+const demoLastHost = toIpFromNum(demoBcNum-1);
+
+const steps = [
+  { label:'Step 1 of 9 — every IP address has two jobs',
+    caption:'192.168.10.130 identifies both which network a device is on, and which device it is within that network — like a street name plus a house number. Subnetting is just deciding exactly where that split happens.',
+    bin:demoBin, oct:demoIp, mask:null, magic:false },
+  { label:'Step 2 of 9 — the /26 says where the split happens',
+    caption:'/26 is short for "the first 26 bits are the network part." That number is called the prefix, or CIDR notation. A bigger prefix means more network bits, which means smaller subnets with fewer hosts each.',
+    bin:demoBin, oct:demoIp, mask:null, magic:false },
+  { label:'Step 3 of 9 — see the address as bits',
+    caption:'Underneath, the address is 32 binary digits (1s and 0s) — 8 per octet. Binary is what lets you count "26 bits in" precisely; decimal numbers like 130 don\u2019t split cleanly.',
+    bin:demoBin, oct:demoIp, mask:null, magic:false },
+  { label:'Step 4 of 9 — the split, bit by bit',
+    caption:'Highlighted = the 26 network bits, identical for every device on this subnet. Plain = the 6 host bits, free to differ from device to device.',
+    bin:demoBin, oct:demoIp, mask:demoCidr, magic:false },
+  { label:'Step 5 of 9 — network address: set every host bit to 0',
+    caption:demoNetOct.join('.') + ' isn\u2019t assigned to any device — it\u2019s the subnet\u2019s own "name," the address routers use to refer to the whole block.',
+    bin:demoNetBin, oct:demoNetOct, mask:demoCidr, magic:false },
+  { label:'Step 6 of 9 — broadcast address: set every host bit to 1',
+    caption:demoBcOct.join('.') + ' also isn\u2019t assigned to a device — it sends one message to every host on the subnet at once. Usable addresses run from ' + demoFirstHost + ' to ' + demoLastHost + ': everything between the network address ' + demoNetOct.join('.') + ' and this broadcast address.',
+    bin:demoBcBin, oct:demoBcOct, mask:demoCidr, magic:false },
+  { label:'Step 7 of 9 — the fast way: the magic number',
+    caption:'Octet ' + (demoOctIdx+1) + ' — outlined in green below — is the "interesting" octet: the one where the mask isn\u2019t 0 or 255 (mask ' + demoMaskOct[demoOctIdx] + '). Magic number = 256 - ' + demoMaskOct[demoOctIdx] + ' = ' + demoMagic + '. That is the block size, so subnets in this octet start 64 apart.',
+    bin:demoBin, oct:demoIp, mask:null, magic:false, highlightOctet:demoOctIdx },
+  { label:'Step 8 of 9 — list multiples of the magic number',
+    caption:'Octet value 130 falls between ' + demoMults.filter(m=>m<=130).pop() + ' and ' + (demoMults.filter(m=>m<=130).pop()+demoMagic-1) + ' — same network/broadcast as the binary method, no bit math needed.',
+    bin:demoBin, oct:demoIp, mask:demoCidr, magic:true },
+  { label:'Step 9 of 9 — invert the mask to get the wildcard mask',
+    caption:'Subnet mask ' + demoMaskOct.join('.') + ' flips to wildcard ' + demoWildOct.join('.') + ' (255 minus each octet). Used in OSPF network statements and ACLs, where a 1 bit means "don\u2019t care" instead of "must match."',
+    bin:demoBin, oct:demoIp, mask:demoCidr, magic:false }
+];
+
+let stepIdx = 0;
+const demoBitsEl = document.getElementById('demoBits');
+const magicRowEl = document.getElementById('magicRow');
+const stepLabelEl = document.getElementById('stepLabel');
+const demoCaptionEl = document.getElementById('demoCaption');
+const dots = document.querySelectorAll('.dot');
+
+function showStep(i){
+  stepIdx = i;
+  const s = steps[i];
+  stepLabelEl.textContent = s.label;
+  demoCaptionEl.textContent = s.caption;
+  if(s.magic){
+    demoBitsEl.style.display = 'none';
+    magicRowEl.style.display = 'flex';
+    drawMagicRow(magicRowEl, demoMults, demoIp[demoOctIdx]);
+  } else {
+    magicRowEl.style.display = 'none';
+    demoBitsEl.style.display = 'flex';
+    drawBits(demoBitsEl, s.bin, s.oct, s.mask);
+    if(s.highlightOctet !== undefined){
+      const group = demoBitsEl.children[s.highlightOctet];
+      if(group) group.classList.add('emphasis');
+    }
+  }
+  dots.forEach((d,di) => d.classList.toggle('active', di === i));
+}
+showStep(0);
+document.getElementById('prevBtn').addEventListener('click', () => showStep((stepIdx - 1 + steps.length) % steps.length));
+document.getElementById('nextBtn').addEventListener('click', () => showStep((stepIdx + 1) % steps.length));
+dots.forEach(d => d.addEventListener('click', () => showStep(Number(d.dataset.i))));
+
+/* help tooltips */
+document.querySelectorAll('.help-btn').forEach(btn => {
+  if(!btn.dataset.help) return;
+  btn.addEventListener('click', () => {
+    const box = document.getElementById(btn.dataset.help);
+    const wasOpen = box.classList.contains('open');
+    box.classList.toggle('open', !wasOpen);
+    btn.classList.toggle('active', !wasOpen);
+  });
+});
+
+/* calculator */
+function render(){
+  const ip = document.getElementById('ipInput').value;
+  const cidr = Number(document.getElementById('cidrInput').value);
+  const errEl = document.getElementById('err');
+  const octets = toOctets(ip);
+
+  if(!octets || !Number.isInteger(cidr) || cidr < 0 || cidr > 32){
+    errEl.style.display = 'block';
+    errEl.textContent = 'Enter a valid IPv4 address and a prefix between 0 and 32.';
+    document.getElementById('bits').innerHTML = '';
+    document.getElementById('stats').innerHTML = '';
+    document.getElementById('range').innerHTML = '';
+    document.getElementById('magicPanel').innerHTML = '';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  const ipBin = toBinStr(octets);
+  const maskBin = '1'.repeat(cidr) + '0'.repeat(32-cidr);
+  const netBin = ipBin.split('').map((b,i) => (i<cidr ? b : '0')).join('');
+  const bcBin = ipBin.split('').map((b,i) => (i<cidr ? b : '1')).join('');
+
+  const maskOct = binToOctets(maskBin);
+  const netOct = binToOctets(netBin);
+  const bcOct = binToOctets(bcBin);
+  const hostBits = 32 - cidr;
+  const totalHosts = Math.pow(2, hostBits);
+  const usable = hostBits <= 1 ? 0 : totalHosts - 2;
+
+  let firstHost, lastHost;
+  if(hostBits <= 1){
+    firstHost = netOct.join('.');
+    lastHost = bcOct.join('.');
+  } else {
+    const netNum = parseInt(netBin,2);
+    const bcNum = parseInt(bcBin,2);
+    const toIp = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+    firstHost = toIp(netNum + 1);
+    lastHost = toIp(bcNum - 1);
+  }
+
+  drawBits(document.getElementById('bits'), ipBin, octets, cidr);
+
+  const stats = [
+    ['Subnet mask', maskOct.join('.')],
+    ['Wildcard mask', maskOct.map(o => 255-o).join('.')],
+    ['Network address', netOct.join('.')],
+    ['Broadcast address', bcOct.join('.')],
+    ['Usable hosts', usable.toLocaleString()]
+  ];
+  const statsEl = document.getElementById('stats');
+  statsEl.innerHTML = '';
+  stats.forEach(([label,val]) => {
+    const card = document.createElement('div');
+    card.className='stat';
+    card.innerHTML = '<div class="l">'+label+'</div><div class="v">'+val+'</div><button class="copy-btn" title="Copy" data-copy="'+val+'">&#10063;</button>';
+    statsEl.appendChild(card);
+  });
+  statsEl.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+        btn.classList.add('copied');
+        btn.innerHTML = '&#10003;';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '&#10063;'; }, 1200);
+      });
+    });
+  });
+
+  document.getElementById('range').innerHTML =
+    '<span style="color:var(--text-dim);">Usable host range</span>' +
+    '<span class="v">' + (usable > 0 ? firstHost + ' – ' + lastHost : 'none') + '</span>';
+
+  const oIdx = interestingOctetIndex(cidr);
+  if(cidr === 32 || cidr === 0){
+    document.getElementById('magicPanel').innerHTML =
+      '<div style="color:var(--text-dim);">Magic number method not applicable at /' + cidr + '.</div>';
+  } else {
+    const magic = 256 - maskOct[oIdx];
+    const ipOctVal = octets[oIdx];
+    let lower = 0;
+    for(let m=0; m<=256; m+=magic){ if(m<=ipOctVal) lower = m; else break; }
+    document.getElementById('magicPanel').innerHTML =
+      '<div class="r"><span style="color:var(--text-dim);">Interesting octet</span><span class="v">octet ' + (oIdx+1) + ' (mask ' + maskOct[oIdx] + ')</span></div>' +
+      '<div class="r"><span style="color:var(--text-dim);">Magic number (256 - ' + maskOct[oIdx] + ')</span><span class="v">' + magic + '</span></div>' +
+      '<div class="r"><span style="color:var(--text-dim);">Block boundaries in octet ' + (oIdx+1) + '</span><span class="v">' + lower + ' – ' + (lower + magic - 1) + '</span></div>';
+  }
+}
+document.getElementById('ipInput').addEventListener('input', render);
+document.getElementById('cidrInput').addEventListener('input', render);
+
+/* URL query params: ?ip=192.168.10.130&cidr=26 */
+(function prefillFromUrl(){
+  const params = new URLSearchParams(window.location.search);
+  const qIp = params.get('ip');
+  const qCidr = params.get('cidr');
+  if(qIp) document.getElementById('ipInput').value = qIp;
+  if(qCidr) document.getElementById('cidrInput').value = qCidr;
+})();
+render();
+
+/* keyboard arrow nav for the walkthrough — ignored while typing in an input */
+document.addEventListener('keydown', (e) => {
+  const tag = document.activeElement.tagName;
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(e.key === 'ArrowLeft') showStep((stepIdx - 1 + steps.length) % steps.length);
+  if(e.key === 'ArrowRight') showStep((stepIdx + 1) % steps.length);
+});
+
+/* ================= Practice quiz ================= */
+(function(){
+  let current = null;
+  let qType = 'binary';
+  let timeLeft = 60;
+  let timerHandle = null;
+  let score = { correct: 0, attempted: 0 };
+  let streak = 0;
+  let best = 0;
+  try { best = Number(localStorage.getItem('subnetQuizBestStreak')) || 0; } catch(e){ best = 0; }
+
+  let history = [];
+  try { history = JSON.parse(localStorage.getItem('subnetQuizHistory')) || []; } catch(e){ history = []; }
+
+  const QUESTION_TYPES_BINARY = ['dec2bin','bin2dec'];
+  const QUESTION_TYPES_V4 = ['full','full','minhost','samesubnet','subnetsneeded'];
+  const QUESTION_TYPES_VLSM = ['vlsm'];
+  const QUESTION_TYPES_V6 = ['v6net','v6count','v6type','eui64'];
+  const QUESTION_TYPES_SCENARIO = ['scenmismatch','scenmismatch','scenfit'];
+  let activeTab = 'binary';
+
+  const GROUP_IDS = ['grpBinary','grpFull','grpMinHost','grpSameSubnet','grpSubnetsNeeded','grpVlsm','grpV6Net','grpV6Count','grpV6Type','grpEui64','grpScenMismatch','grpScenFit'];
+  const GROUP_FOR_TYPE = {
+    dec2bin: 'grpBinary', bin2dec: 'grpBinary',
+    full: 'grpFull', minhost: 'grpMinHost', samesubnet: 'grpSameSubnet', subnetsneeded: 'grpSubnetsNeeded',
+    vlsm: 'grpVlsm',
+    v6net: 'grpV6Net', v6count: 'grpV6Count', v6type: 'grpV6Type', eui64: 'grpEui64',
+    scenmismatch: 'grpScenMismatch', scenfit: 'grpScenFit'
+  };
+  const STATIC_FIELDS_FOR_TYPE = {
+    dec2bin: [['qBinary','Binary (8 digits)']],
+    bin2dec: [['qBinary','Decimal (0–255)']],
+    full: [['qMask','Subnet mask'],['qWild','Wildcard mask'],['qNet','Network address'],
+      ['qFirst','First usable host'],['qLast','Last usable host'],['qBcast','Broadcast address'],
+      ['qNext','Next network'],['qHosts','Usable hosts']],
+    minhost: [['qMinPrefix','Minimum prefix'],['qMinMask','Matching subnet mask']],
+    samesubnet: [['qSameSubnet','Same subnet?']],
+    subnetsneeded: [['qSubPrefix','New prefix'],['qSubMask','Matching subnet mask'],['qSubCount','Subnets actually created']],
+    v6net: [['qV6Net','Network ID']],
+    v6count: [['qV6Count','Number of subnets']],
+    v6type: [['qV6Type','Address type']],
+    eui64: [['qEui64','Interface ID']],
+    scenmismatch: [['qScenReach','Can PC reach the router?'],['qScenIssue','What\u2019s the issue?']],
+    scenfit: [['qScenPrefix','Prefix'],['qScenMask','Subnet mask'],['qScenIfaceIP','Router interface IP']]
+  };
+
+  const timerEl = document.getElementById('qTimer');
+  const timerChip = timerEl.closest('.quiz-chip');
+  const scoreEl = document.getElementById('qScore');
+  const streakEl = document.getElementById('qStreak');
+  const bestEl = document.getElementById('qBest');
+  const historyListEl = document.getElementById('quizHistoryList');
+
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function norm(s){ return s.trim().replace(/\s+/g,'').replace(/^\/*/,'/').replace(/^\/(?=\D)/,''); }
+  function normSimple(s){ return s.trim().replace(/\s+/g,'').toLowerCase(); }
+  function randomHex(len){ let s=''; for(let i=0;i<len;i++) s+=randInt(0,15).toString(16); return s; }
+  function ipOctToNum(o){ return (o[0]*16777216)+(o[1]*65536)+(o[2]*256)+o[3]; }
+  function ipNumToOct(n){ return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255]; }
+  function randomIPv6(){
+    const g = () => randInt(0,65535).toString(16);
+    return [g(),g(),g(),g(),g(),g(),g(),g()].join(':');
+  }
+
+  function updateChips(){
+    scoreEl.textContent = score.correct + ' / ' + score.attempted;
+    streakEl.textContent = String(streak);
+    bestEl.textContent = String(best);
+  }
+
+  function stopTimer(){ if(timerHandle){ clearInterval(timerHandle); timerHandle = null; } }
+
+  function startTimer(){
+    stopTimer();
+    timeLeft = 60;
+    timerEl.textContent = timeLeft + 's';
+    timerChip.classList.remove('warn');
+    timerHandle = setInterval(() => {
+      timeLeft--;
+      timerEl.textContent = Math.max(timeLeft,0) + 's';
+      if(timeLeft <= 10) timerChip.classList.add('warn');
+      if(timeLeft <= 0){ stopTimer(); checkAnswers(true); }
+    }, 1000);
+  }
+
+  function saveHistory(){
+    history = history.slice(0, 30);
+    try { localStorage.setItem('subnetQuizHistory', JSON.stringify(history)); } catch(e){}
+  }
+
+  function formatTime(ts){
+    const d = new Date(ts);
+    return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' ' +
+      d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+  }
+
+  function renderHistory(){
+    if(history.length === 0){
+      historyListEl.innerHTML = '<div class="quiz-history-empty">No attempts logged yet — results will appear here after you check an answer.</div>';
+      return;
+    }
+    historyListEl.innerHTML = history.map(entry => {
+      const fieldsHtml = entry.fields.map(f => {
+        const icon = f.ok
+          ? '<span class="field-icon ok">&#10003;</span>'
+          : '<span class="field-icon bad">&#10007;</span>';
+        const why = f.ok
+          ? ''
+          : '<span class="why">you: ' + (f.given || '(blank)') + ' &rarr; correct: ' + f.expected +
+            (f.note ? '<br>' + f.note : '') + '</span>';
+        return '<div class="field-result">' + icon +
+          '<div class="field-text"><span class="fl">' + f.label + '</span>' + why + '</div></div>';
+      }).join('');
+      return '<div class="history-item ' + (entry.pass ? 'pass' : 'fail') + '">' +
+        '<div class="history-top">' +
+          '<span class="prob">' + entry.ipStr + (entry.timedOut ? ' (timed out)' : '') + '</span>' +
+          '<span class="history-badge ' + (entry.pass ? 'pass' : 'fail') + '">' + (entry.pass ? 'Correct' : 'Incorrect') + '</span>' +
+          '<span class="time">' + formatTime(entry.time) + '</span>' +
+        '</div>' +
+        '<div class="history-fields">' + fieldsHtml + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function showGroupFor(type){
+    GROUP_IDS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    document.getElementById(GROUP_FOR_TYPE[type]).style.display = 'grid';
+  }
+
+  function clearFields(fieldIds){
+    fieldIds.forEach(id => {
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.value = '';
+      el.classList.remove('correct','incorrect');
+    });
+  }
+
+  /* ---- problem generators ---- */
+  function genDec2Bin(){
+    const n = randInt(0,255);
+    const bin = n.toString(2).padStart(8,'0');
+    const bits = [128,64,32,16,8,4,2,1];
+    const on = bits.filter((b,i) => bin[i]==='1');
+    return {
+      type: 'dec2bin',
+      problemHtml: 'Convert <b>' + n + '</b> to 8-bit binary.',
+      answers: { qBinary: bin },
+      explain: { qBinary: 'Powers of two, left to right: 128, 64, 32, 16, 8, 4, 2, 1. ' + n + ' = ' + (on.length ? on.join(' + ') : '0') + ' → ' + bin + '.' }
+    };
+  }
+  function genBin2Dec(){
+    const n = randInt(0,255);
+    const bin = n.toString(2).padStart(8,'0');
+    return {
+      type: 'bin2dec',
+      problemHtml: 'Convert <b>' + bin + '</b> to decimal.',
+      answers: { qBinary: String(n) },
+      explain: { qBinary: 'Add up the powers of two where there\u2019s a 1: ' + bin.split('').map((b,i)=>b==='1'?[128,64,32,16,8,4,2,1][i]:null).filter(Boolean).join(' + ') + ' = ' + n + '.' }
+    };
+  }
+
+  function genFull(){
+    const cidr = randInt(20,29);
+    const octets = [randInt(1,223), randInt(0,255), randInt(0,255), randInt(0,255)];
+    const bin = toBinStr(octets);
+    const maskBin = '1'.repeat(cidr) + '0'.repeat(32-cidr);
+    const netBin = bin.split('').map((b,i)=> i<cidr ? b : '0').join('');
+    const bcBin = bin.split('').map((b,i)=> i<cidr ? b : '1').join('');
+    const maskOct = binToOctets(maskBin);
+    const netOct = binToOctets(netBin);
+    const bcOct = binToOctets(bcBin);
+    const hostBits = 32-cidr;
+    const usable = hostBits<=1 ? 0 : Math.pow(2,hostBits)-2;
+    const toIp = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+    const netNum = parseInt(netBin,2);
+    const bcNum = parseInt(bcBin,2);
+    const blockSize = Math.pow(2, hostBits);
+    return {
+      type: 'full',
+      problemHtml: octets.join('.') + '/' + cidr,
+      answers: {
+        qMask: maskOct.join('.'),
+        qWild: maskOct.map(o => 255-o).join('.'),
+        qNet: netOct.join('.'),
+        qFirst: hostBits<=1 ? netOct.join('.') : toIp(netNum+1),
+        qLast: hostBits<=1 ? bcOct.join('.') : toIp(bcNum-1),
+        qBcast: bcOct.join('.'),
+        qNext: toIp(netNum + blockSize),
+        qHosts: String(usable)
+      },
+      explain: {
+        qMask: 'First ' + cidr + ' bits are 1, the remaining ' + hostBits + ' are 0.',
+        qWild: '255 minus each mask octet: ' + maskOct.join('.') + ' \u2192 ' + maskOct.map(o=>255-o).join('.') + '.',
+        qNet: 'Zero every bit after bit ' + cidr + '.',
+        qFirst: 'One address after the network address.',
+        qLast: 'One address before the broadcast address.',
+        qBcast: 'Set every bit after bit ' + cidr + ' to 1.',
+        qNext: 'Network address + block size (2^' + hostBits + ' = ' + blockSize + ').',
+        qHosts: '2^' + hostBits + ' \u2212 2 (network and broadcast aren\u2019t usable) = ' + usable + '.'
+      }
+    };
+  }
+
+  function genMinHost(){
+    const hostsNeeded = randInt(5, 900);
+    const hostBits = Math.max(2, Math.ceil(Math.log2(hostsNeeded+2)));
+    const prefix = 32 - hostBits;
+    const maskOct = maskOctets(prefix);
+    return {
+      type: 'minhost',
+      problemHtml: 'You need a subnet with at least <b>' + hostsNeeded + '</b> usable hosts. What\u2019s the smallest valid prefix, and its matching subnet mask?',
+      answers: { qMinPrefix: '/' + prefix, qMinMask: maskOct.join('.') },
+      explain: {
+        qMinPrefix: 'Need 2^x \u2265 ' + (hostsNeeded+2) + ' (hosts + network + broadcast). Smallest x is ' + hostBits + ', so prefix = 32 \u2212 ' + hostBits + ' = /' + prefix + '.',
+        qMinMask: '/' + prefix + ' \u2192 ' + maskOct.join('.') + '.'
+      }
+    };
+  }
+
+  function genSameSubnet(){
+    const cidr = randInt(24,28);
+    const baseOctets = [randInt(1,223), randInt(0,255), randInt(0,255), 0];
+    const maskBin = '1'.repeat(cidr) + '0'.repeat(32-cidr);
+    const maskOct = binToOctets(maskBin);
+    const blockSize = Math.pow(2, 32-cidr);
+    const baseLast = randInt(0, 255 - (255 % blockSize || blockSize));
+    const baseLastAligned = baseLast - (baseLast % blockSize);
+    const ipA = [...baseOctets.slice(0,3), baseLastAligned + randInt(0, Math.min(blockSize-1,254))];
+    const sameSubnet = Math.random() < 0.5;
+    let ipB;
+    if(sameSubnet){
+      ipB = [...baseOctets.slice(0,3), baseLastAligned + randInt(0, Math.min(blockSize-1,254))];
+    } else {
+      const otherBlockStart = (baseLastAligned + blockSize) % 256;
+      ipB = [...baseOctets.slice(0,3), Math.min(otherBlockStart + randInt(0, Math.min(blockSize-1,254)), 255)];
+    }
+    const netA = binToOctets(toBinStr(ipA).split('').map((b,i)=>i<cidr?b:'0').join(''));
+    const netB = binToOctets(toBinStr(ipB).split('').map((b,i)=>i<cidr?b:'0').join(''));
+    const actuallySame = netA.join('.') === netB.join('.');
+    return {
+      type: 'samesubnet',
+      problemHtml: 'Given the subnet mask <b>' + maskOct.join('.') + '</b> (/' + cidr + '), are <b>' + ipA.join('.') + '</b> and <b>' + ipB.join('.') + '</b> on the same subnet?',
+      answers: { qSameSubnet: actuallySame ? 'yes' : 'no' },
+      explain: { qSameSubnet: 'Network of ' + ipA.join('.') + ' = ' + netA.join('.') + '. Network of ' + ipB.join('.') + ' = ' + netB.join('.') + '. ' + (actuallySame ? 'These match, so same subnet.' : 'These differ, so different subnets.') }
+    };
+  }
+
+  function genSubnetsNeeded(){
+    const basePrefix = randInt(16,24);
+    const subnetsNeeded = randInt(2,14);
+    const subnetBits = Math.max(1, Math.ceil(Math.log2(subnetsNeeded)));
+    const newPrefix = Math.min(30, basePrefix + subnetBits);
+    const actualBits = newPrefix - basePrefix;
+    const actualSubnets = Math.pow(2, actualBits);
+    const maskOct = maskOctets(newPrefix);
+    return {
+      type: 'subnetsneeded',
+      problemHtml: 'Your network is a <b>/' + basePrefix + '</b>. You need at least <b>' + subnetsNeeded + '</b> subnets from it. What\u2019s the new prefix, its matching subnet mask, and how many subnets will you actually end up with?',
+      answers: { qSubPrefix: '/' + newPrefix, qSubMask: maskOct.join('.'), qSubCount: String(actualSubnets) },
+      explain: {
+        qSubPrefix: 'Need 2^x \u2265 ' + subnetsNeeded + ' subnets. Smallest x is ' + actualBits + ', so new prefix = /' + basePrefix + ' + ' + actualBits + ' = /' + newPrefix + '.',
+        qSubMask: '/' + newPrefix + ' \u2192 ' + maskOct.join('.') + '.',
+        qSubCount: 'Borrowing ' + actualBits + ' bits always gives exactly 2^' + actualBits + ' = ' + actualSubnets + ' subnets, whether or not you need them all.'
+      }
+    };
+  }
+
+  const VLSM_NAMES = ['Sales','Engineering','Warehouse','Guest Wi-Fi','Voice VLAN','Reception','R&D Lab','Branch Link'];
+  function genVlsm(){
+    const numSubnets = randInt(2,3);
+    const shuffledNames = [...VLSM_NAMES].sort(()=>Math.random()-0.5).slice(0, numSubnets);
+    const rows = shuffledNames.map(name => ({ name, hosts: randInt(5,50) }));
+    const sorted = [...rows].sort((a,b) => b.hosts - a.hosts);
+
+    // Size the base block from actual demand so it's always guaranteed to fit —
+    // never pick a base prefix independently of the host requirements.
+    let totalSpace = 0;
+    sorted.forEach(r => {
+      const hostBits = Math.max(2, Math.ceil(Math.log2(r.hosts+2)));
+      totalSpace += Math.pow(2, hostBits);
+    });
+    const slack = randInt(0,1); // sometimes give a little headroom, sometimes an exact fit
+    const totalBits = Math.ceil(Math.log2(totalSpace)) + slack;
+    const basePrefix = Math.max(16, 32 - totalBits);
+    const baseOct = [randInt(1,223), randInt(0,255), 0, 0];
+
+    const toIp = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+    const baseStartRaw = (baseOct[0]*16777216)+(baseOct[1]*65536)+(baseOct[2]*256)+baseOct[3];
+    const blockAlign = Math.pow(2, 32-basePrefix);
+    const baseStart = baseStartRaw - (baseStartRaw % blockAlign); // ensure it's a valid network address for this prefix
+
+    let cursor = baseStart;
+    const answers = {};
+    const explain = {};
+    const fieldDefs = [];
+    const listItems = [];
+    sorted.forEach((r,i) => {
+      const hostBits = Math.max(2, Math.ceil(Math.log2(r.hosts+2)));
+      const prefix = 32 - hostBits;
+      const blockSize = Math.pow(2, hostBits);
+      const netNum = cursor;
+      const idP = 'qVlsmP'+i, idN = 'qVlsmN'+i;
+      answers[idP] = '/' + prefix;
+      answers[idN] = toIp(netNum);
+      explain[idP] = r.name + ' needs ' + r.hosts + ' hosts \u2192 smallest block \u2265 ' + (r.hosts+2) + ' addresses = /' + prefix + '.';
+      explain[idN] = 'Largest requirement goes first, starting at the base network. This block starts right after the previous one.';
+      fieldDefs.push([idP, r.name + ' \u2014 prefix']);
+      fieldDefs.push([idN, r.name + ' \u2014 network address']);
+      listItems.push('<li>' + r.name + ': at least ' + r.hosts + ' hosts</li>');
+      cursor += blockSize;
+    });
+
+    return {
+      type: 'vlsm',
+      problemHtml: 'From <b>' + toIp(baseStart) + '/' + basePrefix + '</b>, allocate subnets for:<ul style="margin:6px 0 0 18px;padding:0;">' + listItems.join('') + '</ul>Give the prefix and network address for each, largest requirement first.',
+      answers, explain, fieldDefs
+    };
+  }
+
+  function genV6Net(){
+    const addr = randomIPv6();
+    const prefix = [32,48,56,64][randInt(0,3)];
+    const groups = expandV6(addr);
+    const netId = v6NetworkId(groups, prefix) + '/' + prefix;
+    return {
+      type: 'v6net',
+      problemHtml: 'Given <b>' + compressV6(groups) + '/' + prefix + '</b>, what\u2019s the network ID (compressed, with prefix)?',
+      answers: { qV6Net: netId },
+      explain: { qV6Net: 'Zero out every bit after bit ' + prefix + ' (4 bits per hex digit), then compress the result.' }
+    };
+  }
+
+  function genV6Count(){
+    const base = [32,40,48][randInt(0,2)];
+    const target = base + [8,16,24][randInt(0,2)];
+    const count = Math.pow(2, target-base);
+    return {
+      type: 'v6count',
+      problemHtml: 'You have a <b>/' + base + '</b> allocation and want to create <b>/' + target + '</b> subnets from it. How many subnets can you create?',
+      answers: { qV6Count: count.toLocaleString() },
+      explain: { qV6Count: '2^(' + target + ' \u2212 ' + base + ') = 2^' + (target-base) + ' = ' + count.toLocaleString() + '.' }
+    };
+  }
+
+  function genV6Type(){
+    const types = ['link-local','unique-local','multicast','global-unicast'];
+    const chosen = types[randInt(0,3)];
+    const defs = {
+      'link-local': { prefix: 'fe80', note: 'Starts with fe80 (fe80::/10) \u2014 link-local addresses never leave the local network segment.' },
+      'unique-local': { prefix: 'fd' + randomHex(2), note: 'Starts with fd (fc00::/7, in practice fd00::/8) \u2014 unique local addresses are IPv6\u2019s equivalent of RFC 1918 private ranges.' },
+      'multicast': { prefix: 'ff' + randomHex(2), note: 'Starts with ff (ff00::/8) \u2014 multicast addresses target a group of interfaces, never a single one.' },
+      'global-unicast': { prefix: (Math.random()<0.5?'2':'3') + randomHex(3), note: 'Starts with 2 or 3 (2000::/3) \u2014 globally routable on the internet, like a public IPv4 address.' }
+    };
+    const def = defs[chosen];
+    const rest = [randomHex(4),randomHex(4),randomHex(4),randomHex(4),randomHex(4),randomHex(4),randomHex(4)].join(':');
+    const addr = def.prefix + ':' + rest;
+    return {
+      type: 'v6type',
+      problemHtml: 'What type of IPv6 address is <b>' + addr + '</b>?',
+      answers: { qV6Type: chosen },
+      explain: { qV6Type: def.note }
+    };
+  }
+
+  function genEui64(){
+    const macBytes = [randInt(0,255)&0xFE, randInt(0,255), randInt(0,255), randInt(0,255), randInt(0,255), randInt(0,255)];
+    const macHex = macBytes.map(b => b.toString(16).padStart(2,'0'));
+    const macFormatted = macHex.join(':');
+    const flipped = (macBytes[0] ^ 0x02).toString(16).padStart(2,'0');
+    const hex16 = flipped + macHex[1] + macHex[2] + 'ff' + 'fe' + macHex[3] + macHex[4] + macHex[5];
+    const groups = [hex16.slice(0,4), hex16.slice(4,8), hex16.slice(8,12), hex16.slice(12,16)];
+    const answer = groups.join(':');
+    return {
+      type: 'eui64',
+      problemHtml: 'A device\u2019s MAC address is <b>' + macFormatted + '</b>. What\u2019s its EUI-64 interface ID (used for SLAAC)?',
+      answers: { qEui64: answer },
+      explain: { qEui64: 'Split the MAC in half, insert fffe in the middle, and flip the U/L bit (XOR 0x02) of the first byte: 0x' + macHex[0] + ' \u2192 0x' + flipped + '. Result: ' + answer + '.' }
+    };
+  }
+
+  /* ---- simple topology diagram (2-3 boxes, plain lines, no visual hints about the bug) ---- */
+  function svgBox(x, y, w, h, title, lines){
+    const linesHtml = lines.map((l,i) =>
+      '<text x="'+(x+w/2)+'" y="'+(y+34+i*16)+'" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#8fa0bd">'+l+'</text>'
+    ).join('');
+    return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="8" fill="#111a30" stroke="#2a3c5e" stroke-width="1.5"/>' +
+      '<text x="'+(x+w/2)+'" y="'+(y+20)+'" text-anchor="middle" font-family="Rajdhani, sans-serif" font-weight="600" font-size="13" fill="#7dd3fc">'+title+'</text>' +
+      linesHtml;
+  }
+  function svgLine(x1,y1,x2,y2){
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#2a3c5e" stroke-width="2"/>';
+  }
+  function topologySVG(boxes, links){
+    const body = links.map(l => svgLine(l[0],l[1],l[2],l[3])).join('') +
+      boxes.map(b => svgBox(b.x,b.y,b.w,b.h,b.title,b.lines)).join('');
+    return '<svg viewBox="0 0 580 150" style="width:100%;max-width:580px;height:auto;display:block;">' + body + '</svg>';
+  }
+
+  const SCEN_ISSUE_TEXT = {
+    none: 'Nothing \u2014 it\u2019s configured correctly',
+    gateway: 'Wrong default gateway (doesn\u2019t match the router\u2019s interface)',
+    mask: 'Subnet mask mismatch (PC\u2019s mask doesn\u2019t match the router\u2019s)',
+    'ip-outside': 'PC\u2019s IP address is on a different subnet than the router\u2019s interface'
+  };
+
+  function genScenMismatch(){
+    const prefix = randInt(24,27);
+    const blockSize = Math.pow(2,32-prefix);
+    const rawOct = [randInt(1,199), randInt(0,255), randInt(0,255), randInt(0,255)];
+    const rawNum = ipOctToNum(rawOct);
+    const netNum = rawNum - (rawNum % blockSize);
+    const routerNum = netNum + 1;
+
+    const bugTypes = ['none','gateway','mask','ip-outside'];
+    const bugType = bugTypes[randInt(0,3)];
+
+    let pcPrefix = prefix;
+    let pcNum;
+    let gatewayNum = routerNum;
+
+    if(bugType === 'mask'){
+      const options = [prefix-2, prefix+2].filter(p => p>=16 && p<=29 && p!==prefix);
+      pcPrefix = options[randInt(0,options.length-1)];
+    }
+
+    let attempts = 0;
+    do {
+      if(bugType === 'ip-outside'){
+        const otherNetNum = netNum + blockSize;
+        pcNum = otherNetNum + randInt(2, Math.max(2,Math.min(blockSize-2, 100)));
+      } else {
+        pcNum = netNum + randInt(2, Math.max(2,Math.min(blockSize-2, 200)));
+      }
+      attempts++;
+      const pcBlockSizeCheck = Math.pow(2,32-pcPrefix);
+      const pcNetNumCheck = pcNum - (pcNum % pcBlockSizeCheck);
+      if(pcNum > pcNetNumCheck && pcNum < pcNetNumCheck + pcBlockSizeCheck - 1) break;
+    } while(attempts < 30);
+
+    if(bugType === 'gateway'){
+      gatewayNum = netNum + 1 + randInt(1,5);
+    }
+
+    const pcBlockSize = Math.pow(2,32-pcPrefix);
+    const pcNetNum = pcNum - (pcNum % pcBlockSize);
+
+    let issue;
+    if(gatewayNum !== routerNum) issue = 'gateway';
+    else if(pcPrefix !== prefix) issue = 'mask';
+    else if(pcNetNum !== netNum) issue = 'ip-outside';
+    else issue = 'none';
+    const canReach = issue === 'none';
+
+    const routerOct = ipNumToOct(routerNum), pcOct = ipNumToOct(pcNum), gatewayOct = ipNumToOct(gatewayNum);
+    const pcMaskOct = maskOctets(pcPrefix), routerMaskOct = maskOctets(prefix);
+    const netOct = ipNumToOct(netNum), pcNetOct = ipNumToOct(pcNetNum);
+
+    const diagram = topologySVG([
+      { x:10, y:40, w:150, h:100, title:'PC', lines:['IP: '+pcOct.join('.'), 'Mask: '+pcMaskOct.join('.'), 'GW: '+gatewayOct.join('.')] },
+      { x:215, y:65, w:110, h:50, title:'Switch', lines:['just connects devices'] },
+      { x:420, y:40, w:150, h:100, title:'Router', lines:['Gi0/0:', routerOct.join('.')+'/'+prefix] }
+    ], [[160,90,215,90],[325,90,420,90]]);
+
+    return {
+      type: 'scenmismatch',
+      diagram,
+      problemHtml: 'PC is configured as shown, connected through a switch to the router\u2019s LAN interface. Can PC reach the router (its default gateway)?',
+      answers: { qScenReach: canReach ? 'yes' : 'no', qScenIssue: issue },
+      explain: {
+        qScenReach: 'PC\u2019s network (using its own mask) = ' + pcNetOct.join('.') + '/' + pcPrefix + '. Router\u2019s LAN = ' + netOct.join('.') + '/' + prefix + '. Configured gateway = ' + gatewayOct.join('.') + ', router\u2019s real interface = ' + routerOct.join('.') + '.',
+        qScenIssue: SCEN_ISSUE_TEXT[issue] + (issue !== 'none' ? ' \u2014 check gateway first, then mask, then whether the IP itself falls in the router\u2019s subnet.' : '')
+      }
+    };
+  }
+
+  function genScenFit(){
+    const hostsNeeded = randInt(10,200);
+    const hostBits = Math.max(2, Math.ceil(Math.log2(hostsNeeded+2)));
+    const prefix = 32-hostBits;
+    const blockSize = Math.pow(2,hostBits);
+    const rawOct = [randInt(1,223), randInt(0,255), randInt(0,255), randInt(0,255)];
+    const rawNum = ipOctToNum(rawOct);
+    const netNum = rawNum - (rawNum % blockSize);
+    const ifaceNum = netNum + 1;
+    const netOct = ipNumToOct(netNum);
+    const maskOct = maskOctets(prefix);
+    const ifaceOct = ipNumToOct(ifaceNum);
+
+    const diagram = topologySVG([
+      { x:10, y:45, w:150, h:90, title:'Router', lines:['Gi0/0: ?'] },
+      { x:215, y:65, w:110, h:50, title:'Switch', lines:['just connects devices'] },
+      { x:420, y:40, w:150, h:100, title:'LAN', lines:['Needs \u2265 '+hostsNeeded+' hosts', 'Net: '+netOct.join('.')] }
+    ], [[160,90,215,90],[325,90,420,90]]);
+
+    return {
+      type: 'scenfit',
+      diagram,
+      problemHtml: 'This LAN needs to support at least <b>' + hostsNeeded + '</b> hosts. The network address is <b>' + netOct.join('.') + '</b>. What prefix and subnet mask should the router\u2019s interface use, and what IP should be assigned to it (the first usable address)?',
+      answers: { qScenPrefix: '/'+prefix, qScenMask: maskOct.join('.'), qScenIfaceIP: ifaceOct.join('.') },
+      explain: {
+        qScenPrefix: 'Need 2^x \u2265 ' + (hostsNeeded+2) + '. Smallest x is ' + hostBits + ', so prefix = 32 \u2212 ' + hostBits + ' = /' + prefix + '.',
+        qScenMask: '/' + prefix + ' \u2192 ' + maskOct.join('.') + '.',
+        qScenIfaceIP: 'Routers conventionally take the first usable address in the block: ' + netOct.join('.') + ' + 1 = ' + ifaceOct.join('.') + '.'
+      }
+    };
+  }
+
+  const GENERATORS = {
+    dec2bin: genDec2Bin, bin2dec: genBin2Dec,
+    full: genFull, minhost: genMinHost, samesubnet: genSameSubnet, subnetsneeded: genSubnetsNeeded,
+    vlsm: genVlsm,
+    v6net: genV6Net, v6count: genV6Count, v6type: genV6Type, eui64: genEui64,
+    scenmismatch: genScenMismatch, scenfit: genScenFit
+  };
+
+  const HELP_FOR_TYPE = {
+    dec2bin: 'Break the number down into powers of two (128, 64, 32, 16, 8, 4, 2, 1) from left to right \u2014 write a 1 wherever that value fits into what\u2019s left, 0 otherwise.',
+    bin2dec: 'Line the 8 digits up against 128, 64, 32, 16, 8, 4, 2, 1 and add up the ones where there\u2019s a 1.',
+    full: 'Same method as the walkthrough and calculator above: convert to binary, split at the prefix, zero the host bits for the network address, set them all to 1 for the broadcast address, and the first/last usable hosts are one step in from each end. "Next network" is just this network\u2019s address plus the block size (2 to the power of the host bits).',
+    minhost: 'You need enough host bits to cover hosts + 2 (the network and broadcast addresses aren\u2019t usable). Find the smallest number of host bits where 2^bits is at least hosts + 2, then the prefix is 32 minus that.',
+    samesubnet: 'Work out the network address of each IP using the given mask (zero out everything past the prefix, same as in the walkthrough). If both addresses land on the same network address, they\u2019re on the same subnet.',
+    subnetsneeded: 'Borrowing bits from the host portion doubles your subnet count each time. Find the smallest number of bits to borrow where 2^bits is at least the number of subnets you need, then add that to the original prefix.',
+    vlsm: 'Sort the requirements largest-first. Each subnet gets the smallest block that fits its host count (+2 for network/broadcast). Allocate them back-to-back, starting from the base network, in that sorted order \u2014 this keeps every block properly aligned automatically.',
+    v6net: 'Same idea as IPv4: zero out every bit after the prefix length. IPv6 just groups bits into 4-bit hex digits instead of 8-bit decimal octets.',
+    v6count: 'Every extra bit you borrow for the new prefix doubles how many subnets you get. Subnets created = 2 to the power of (new prefix minus old prefix).',
+    v6type: 'IPv6 address types are identified by their first hex digits: fe80 = link-local, fc00/fd00 = unique local, ff = multicast, 2000::/3 (starts with 2 or 3) = global unicast.',
+    eui64: 'Split the 6-byte MAC address in half, insert fffe in the middle to make it 8 bytes, then flip the 7th bit (the universal/local bit, worth 0x02) of the very first byte.',
+    scenmismatch: 'A default gateway is the router address a device sends traffic to whenever the destination isn\u2019t on its own subnet \u2014 without a correct one, a PC can talk to others on its own LAN but nothing beyond it. Check three things in order: does the configured gateway actually match the router\u2019s real interface address? Does the PC\u2019s subnet mask match the router\u2019s? And using that mask, is the PC\u2019s own IP in the same network as the router\u2019s interface? Any one of these being wrong breaks connectivity.',
+    scenfit: 'Same as the minimum-prefix calculator questions: find the smallest prefix that covers the required hosts (+2), convert to a mask, then the router\u2019s own interface conventionally takes the first usable address in that block.'
+  };
+
+  const tabButtons = {
+    binary: document.getElementById('tabBinary'),
+    v4: document.getElementById('tabV4'),
+    vlsm: document.getElementById('tabVlsm'),
+    v6: document.getElementById('tabV6'),
+    scenario: document.getElementById('tabScenario')
+  };
+  const startDesc = document.getElementById('quizStartDesc');
+  const DESC = {
+    binary: 'Convert between decimal and binary octets, 60 seconds each. This is the foundation every other subnetting shortcut is built on. Every attempt is logged below so you can see exactly what you got wrong and why.',
+    v4: 'Full-breakdown, minimum-prefix, same-subnet, and subnets-needed questions on IPv4 addresses, 60 seconds each. Every attempt is logged below so you can see exactly what you got wrong and why.',
+    vlsm: 'Given a base network and a list of host requirements, work out the prefix and network address for each subnet, largest requirement first, 60 seconds each. Every attempt is logged below so you can see exactly what you got wrong and why.',
+    v6: 'Network ID, subnet-count, address-type, and EUI-64 questions on IPv6, 60 seconds each. Every attempt is logged below so you can see exactly what you got wrong and why.',
+    scenario: 'A small topology diagram (2-3 devices) with configured addresses. A default gateway is the router address a device sends traffic to whenever it wants to reach something outside its own subnet. Diagnose whether a PC can reach its gateway, or work out the right prefix/mask/interface IP to fit a stated requirement. Every attempt is logged below so you can see exactly what you got wrong and why.'
+  };
+  const POOLS = { binary: QUESTION_TYPES_BINARY, v4: QUESTION_TYPES_V4, vlsm: QUESTION_TYPES_VLSM, v6: QUESTION_TYPES_V6, scenario: QUESTION_TYPES_SCENARIO };
+
+  function setTab(tab){
+    activeTab = tab;
+    Object.keys(tabButtons).forEach(t => tabButtons[t].classList.toggle('active', t === tab));
+    startDesc.textContent = DESC[tab];
+    const quizBodyVisible = document.getElementById('quizBody').style.display !== 'none';
+    if(quizBodyVisible) newProblem();
+  }
+  Object.keys(tabButtons).forEach(t => tabButtons[t].addEventListener('click', () => setTab(t)));
+
+  const qHelpBtn = document.getElementById('qHelpBtn');
+  const qHelpBox = document.getElementById('qHelpBox');
+  qHelpBtn.addEventListener('click', () => {
+    const open = qHelpBox.classList.toggle('open');
+    qHelpBtn.classList.toggle('active', open);
+  });
+
+  function fieldsForCurrent(){
+    if(qType === 'vlsm') return current.fieldDefs;
+    return STATIC_FIELDS_FOR_TYPE[qType];
+  }
+
+  function buildVlsmFields(){
+    const grp = document.getElementById('grpVlsm');
+    grp.innerHTML = current.fieldDefs.map(([id,label]) => {
+      const isNet = id.startsWith('qVlsmN');
+      return '<div class="quiz-field"><label>' + label + '</label><input type="text" id="' + id + '" placeholder="' + (isNet ? 'e.g. 192.168.1.0' : 'e.g. /27') + '"></div>';
+    }).join('');
+  }
+
+  function newProblem(){
+    const pool = POOLS[activeTab];
+    qType = pool[randInt(0, pool.length-1)];
+    current = GENERATORS[qType]();
+    document.getElementById('quizProblem').innerHTML = current.problemHtml;
+    document.getElementById('scenDiagram').innerHTML = current.diagram ? current.diagram : '';
+    qHelpBox.textContent = HELP_FOR_TYPE[qType];
+    qHelpBox.classList.remove('open');
+    qHelpBtn.classList.remove('active');
+    showGroupFor(qType);
+    if(qType === 'vlsm') buildVlsmFields();
+    clearFields(fieldsForCurrent().map(f => f[0]));
+    document.getElementById('qFeedback').className = 'quiz-feedback';
+    startTimer();
+  }
+
+  function checkAnswers(timedOut){
+    stopTimer();
+    let allCorrect = true;
+    const fieldDefs = fieldsForCurrent();
+    const fieldResults = fieldDefs.map(([id, label]) => {
+      const el = document.getElementById(id);
+      const given = (el.tagName === 'SELECT' ? (el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '') : el.value.trim());
+      const expected = current.answers[id];
+      const rawVal = el.value;
+      const ok = (id === 'qMinPrefix' || id === 'qSubPrefix' || id === 'qScenPrefix' || id.startsWith('qVlsmP'))
+        ? norm(rawVal) === expected
+        : normSimple(rawVal) === normSimple(expected);
+      el.classList.toggle('correct', ok);
+      el.classList.toggle('incorrect', !ok);
+      if(!ok) allCorrect = false;
+      return { label, given, expected, ok, note: (!ok && current.explain && current.explain[id]) ? current.explain[id] : null };
+    });
+
+    score.attempted++;
+    if(allCorrect && !timedOut){
+      score.correct++;
+      streak++;
+      if(streak > best){
+        best = streak;
+        try { localStorage.setItem('subnetQuizBestStreak', String(best)); } catch(e){}
+      }
+    } else {
+      streak = 0;
+    }
+    updateChips();
+
+    history.unshift({
+      time: Date.now(),
+      ipStr: current.problemHtml.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim(),
+      pass: allCorrect && !timedOut,
+      timedOut: timedOut,
+      fields: fieldResults
+    });
+    saveHistory();
+    renderHistory();
+
+    const fb = document.getElementById('qFeedback');
+    fb.className = 'quiz-feedback show ' + (allCorrect && !timedOut ? 'pass' : 'fail');
+    fb.textContent = (timedOut ? 'Time\u2019s up. ' : (allCorrect ? 'All correct — nice work.' : 'Not quite — see the breakdown in History below.'));
+  }
+
+  document.getElementById('qStart').addEventListener('click', () => {
+    document.getElementById('quizStart').style.display = 'none';
+    document.getElementById('quizBody').style.display = 'block';
+    newProblem();
+  });
+  document.getElementById('qCheck').addEventListener('click', () => checkAnswers(false));
+  document.getElementById('qNew').addEventListener('click', newProblem);
+  document.getElementById('qClearHistory').addEventListener('click', () => {
+    history = [];
+    saveHistory();
+    renderHistory();
+  });
+  updateChips();
+  renderHistory();
+})();
+
+/* ================= VLSM ================= */
+(function(){
+  const rowsEl = document.getElementById('vlsmRows');
+  let rowCount = 0;
+
+  function addRow(name, hosts){
+    rowCount++;
+    const row = document.createElement('div');
+    row.className = 'vlsm-row';
+    row.innerHTML =
+      '<div class="name"><label>Subnet name</label><input type="text" class="v-name" value="'+(name||('Subnet '+rowCount))+'"></div>' +
+      '<div class="hosts"><label>Hosts needed</label><input type="number" min="1" class="v-hosts" value="'+(hosts||10)+'"></div>' +
+      '<button class="rm" title="Remove">&times;</button>';
+    row.querySelector('.rm').addEventListener('click', () => row.remove());
+    rowsEl.appendChild(row);
+  }
+  addRow('Sales', 50);
+  addRow('Engineering', 25);
+  addRow('Voice VLAN', 10);
+
+  document.getElementById('vAddRow').addEventListener('click', () => addRow());
+
+  function ipToNum(octets){ return (octets[0]*16777216)+(octets[1]*65536)+(octets[2]*256)+octets[3]; }
+  function numToIp(n){ return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.'); }
+  function prefixToMask(p){ return binToOctets('1'.repeat(p)+'0'.repeat(32-p)).join('.'); }
+
+  document.getElementById('vCalc').addEventListener('click', () => {
+    const errEl = document.getElementById('vErr');
+    const resultEl = document.getElementById('vlsmResult');
+    errEl.classList.remove('show');
+    resultEl.innerHTML = '';
+
+    const baseOct = toOctets(document.getElementById('vBase').value);
+    const basePrefix = Number(document.getElementById('vBasePrefix').value);
+    if(!baseOct || !Number.isInteger(basePrefix) || basePrefix < 1 || basePrefix > 30){
+      errEl.textContent = 'Enter a valid base network and prefix (1–30).';
+      errEl.classList.add('show');
+      return;
+    }
+
+    const rows = Array.from(rowsEl.querySelectorAll('.vlsm-row')).map(r => ({
+      name: r.querySelector('.v-name').value || 'Subnet',
+      hosts: Number(r.querySelector('.v-hosts').value)
+    }));
+    if(rows.length === 0 || rows.some(r => !Number.isInteger(r.hosts) || r.hosts < 1)){
+      errEl.textContent = 'Every subnet needs a valid host count of at least 1.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    const sorted = [...rows].sort((a,b) => b.hosts - a.hosts);
+    const baseStart = ipToNum(baseOct);
+    const baseSize = Math.pow(2, 32-basePrefix);
+    const baseEnd = baseStart + baseSize;
+
+    let cursor = baseStart;
+    const allocations = [];
+    let overflowed = false;
+
+    sorted.forEach(r => {
+      const hostBitsNeeded = Math.max(2, Math.ceil(Math.log2(r.hosts + 2)));
+      const blockSize = Math.pow(2, hostBitsNeeded);
+      const prefix = 32 - hostBitsNeeded;
+      if(cursor + blockSize > baseEnd){ overflowed = true; return; }
+      const netNum = cursor;
+      const bcNum = cursor + blockSize - 1;
+      allocations.push({
+        name: r.name,
+        hosts: r.hosts,
+        prefix: prefix,
+        mask: prefixToMask(prefix),
+        network: numToIp(netNum) + '/' + prefix,
+        range: (blockSize>2 ? numToIp(netNum+1)+' – '+numToIp(bcNum-1) : 'n/a'),
+        broadcast: numToIp(bcNum),
+        capacity: blockSize-2 > 0 ? blockSize-2 : 0
+      });
+      cursor += blockSize;
+    });
+
+    if(overflowed){
+      errEl.textContent = 'These subnets do not fit inside /' + basePrefix + ' (' + baseSize + ' addresses). Use a larger base block or smaller requirements.';
+      errEl.classList.add('show');
+    }
+
+    if(allocations.length){
+      let html = '<table class="vlsm-table"><thead><tr>' +
+        '<th>Name</th><th>Needed</th><th>Prefix</th><th>Mask</th><th>Network</th><th>Usable range</th><th>Broadcast</th><th>Capacity</th>' +
+        '</tr></thead><tbody>';
+      allocations.forEach(a => {
+        html += '<tr><td>'+a.name+'</td><td>'+a.hosts+'</td><td>/'+a.prefix+'</td><td>'+a.mask+'</td><td>'+a.network+'</td><td>'+a.range+'</td><td>'+a.broadcast+'</td><td>'+a.capacity+'</td></tr>';
+      });
+      html += '</tbody></table>';
+      resultEl.innerHTML = html;
+      document.getElementById('vlsmNote').style.display = 'block';
+    } else {
+      document.getElementById('vlsmNote').style.display = 'none';
+    }
+  });
+})();
+
+function expandV6(addr){
+  addr = addr.trim();
+  if(addr.indexOf('::') !== -1){
+    const parts = addr.split('::');
+    const left = parts[0] ? parts[0].split(':') : [];
+    const right = parts[1] ? parts[1].split(':') : [];
+    const missing = 8 - (left.length + right.length);
+    if(missing < 0) return null;
+    const mid = new Array(missing).fill('0');
+    return [...left, ...mid, ...right].map(g => g.padStart(4,'0'));
+  }
+  const groups = addr.split(':');
+  if(groups.length !== 8) return null;
+  return groups.map(g => g.padStart(4,'0'));
+}
+function compressV6(groups){
+  const nums = groups.map(g => g.replace(/^0+(?=.)/,''));
+  let bestStart=-1, bestLen=0, curStart=-1, curLen=0;
+  nums.forEach((g,i) => {
+    if(g === '0'){
+      if(curStart === -1) curStart = i;
+      curLen++;
+      if(curLen > bestLen){ bestLen = curLen; bestStart = curStart; }
+    } else { curStart = -1; curLen = 0; }
+  });
+  if(bestLen < 2) return nums.join(':');
+  const before = nums.slice(0,bestStart).join(':');
+  const after = nums.slice(bestStart+bestLen).join(':');
+  return before + '::' + after;
+}
+function hexToBin4(h){ return parseInt(h,16).toString(2).padStart(4,'0'); }
+function v6NetworkId(groups, prefix){
+  const fullBin = groups.map(g => g.split('').map(hexToBin4).join('')).join('');
+  const netBin = fullBin.split('').map((b,i) => i<prefix ? b : '0').join('');
+  const netHexGroups = [];
+  for(let i=0;i<8;i++) netHexGroups.push(netBin.slice(i*16,i*16+16).match(/.{4}/g).map(x=>parseInt(x,2).toString(16)).join(''));
+  return compressV6(netHexGroups);
+}
+
+/* ================= IPv6 ================= */
+(function(){
+  function render6(){
+    const raw = document.getElementById('v6Input').value;
+    const prefix = Number(document.getElementById('v6Prefix').value);
+    const errEl = document.getElementById('v6Err');
+    const groupsEl = document.getElementById('v6Groups');
+    const statsEl = document.getElementById('v6Stats');
+    const groups = expandV6(raw);
+
+    if(!groups || !Number.isInteger(prefix) || prefix < 0 || prefix > 128){
+      errEl.style.display = 'block';
+      errEl.textContent = 'Enter a valid IPv6 address and a prefix between 0 and 128.';
+      groupsEl.innerHTML = ''; statsEl.innerHTML = '';
+      return;
+    }
+    errEl.style.display = 'none';
+
+    const fullBin = groups.map(g => g.split('').map(hexToBin4).join('')).join('');
+
+    groupsEl.innerHTML = '';
+    for(let g=0; g<8; g++){
+      const gWrap = document.createElement('div');
+      gWrap.className = 'ipv6-group';
+      const row = document.createElement('div');
+      row.className = 'nibrow';
+      for(let n=0; n<4; n++){
+        const bitStart = g*16 + n*4;
+        const bitEnd = bitStart + 3;
+        let cls = 'nib';
+        if(bitEnd < prefix) cls += ' net';
+        else if(bitStart < prefix && prefix <= bitEnd) cls += ' partial';
+        const cell = document.createElement('div');
+        cell.className = cls;
+        cell.textContent = groups[g][n];
+        row.appendChild(cell);
+      }
+      gWrap.appendChild(row);
+      const label = document.createElement('div');
+      label.className = 'g-label';
+      label.textContent = 'g'+(g+1);
+      gWrap.appendChild(label);
+      groupsEl.appendChild(gWrap);
+      if(g < 7){
+        const colon = document.createElement('div');
+        colon.style.cssText = 'align-self:center;color:var(--text-mute);font-family:JetBrains Mono,monospace;';
+        colon.textContent = ':';
+        groupsEl.appendChild(colon);
+      }
+    }
+
+    const netBin = fullBin.split('').map((b,i) => i<prefix ? b : '0').join('');
+    const netGroups = [];
+    for(let i=0;i<32;i+=4) netGroups.push(parseInt(netBin.slice(i*4,i*4+4),2).toString(16));
+    const netHexGroups = [];
+    for(let i=0;i<8;i++) netHexGroups.push(netBin.slice(i*16,i*16+16).match(/.{4}/g).map(x=>parseInt(x,2).toString(16)).join(''));
+
+    const compressedFull = compressV6(groups);
+    const compressedNet = compressV6(netHexGroups);
+    const interfaceBits = 128 - prefix;
+
+    const stats = [
+      ['Compressed address', compressedFull],
+      ['Network / prefix', compressedNet + '/' + prefix],
+      ['Interface ID length', interfaceBits + ' bits'],
+      ['Addresses in block', interfaceBits >= 53 ? '2^'+interfaceBits+' (astronomically large)' : Math.pow(2,interfaceBits).toLocaleString()]
+    ];
+    statsEl.innerHTML = '';
+    stats.forEach(([label,val]) => {
+      const card = document.createElement('div');
+      card.className = 'stat';
+      card.innerHTML = '<div class="l">'+label+'</div><div class="v" style="font-size:14px;word-break:break-all;">'+val+'</div>';
+      statsEl.appendChild(card);
+    });
+  }
+  document.getElementById('v6Input').addEventListener('input', render6);
+  document.getElementById('v6Prefix').addEventListener('input', render6);
+  render6();
+})();
+</script>
+</body>
+</html>
